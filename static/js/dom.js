@@ -1,5 +1,5 @@
 // It uses data_handler.js to visualize elements
-import { dataHandler } from "./data_handler.js";
+import {dataHandler} from "./data_handler.js";
 
 export let dom = {
     init: function () {
@@ -7,7 +7,7 @@ export let dom = {
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
-        dataHandler.getBoards(function(boards){
+        dataHandler.getBoards(function (boards) {
             dom.showBoards(boards);
         });
     },
@@ -15,22 +15,20 @@ export let dom = {
         // shows boards appending them to #boards div
         // it adds necessary event listeners also
 
-        let boardList = '';
+        for (let board of boards) {
+            let boardTitle = ` <div class="board-title">${board.title}</div>`;
+            const outerHtml = `<div class="board"></div>`;
+            const boardHeader = `<div class="board-header"> ${boardTitle}</div>`
+            const boardColumns = `<div class="board-columns"> BoardColumns</div>`
 
-        for(let board of boards){
-            boardList += `
-                <li>${board.title}</li>
-            `;
+            let boardsContainer = document.querySelector('.board-container');
+            boardsContainer.insertAdjacentHTML("beforeend", outerHtml);
+            let boardElement = document.querySelector('.board');
+            boardElement.insertAdjacentHTML("beforeend", boardHeader);
+            boardElement.insertAdjacentHTML('beforeend', boardColumns);
         }
 
-        const outerHtml = `
-            <ul class="board-container">
-                ${boardList}
-            </ul>
-        `;
 
-        let boardsContainer = document.querySelector('#boards');
-        boardsContainer.insertAdjacentHTML("beforeend", outerHtml);
     },
     loadCards: function (boardId) {
         // retrieves cards and makes showCards called
