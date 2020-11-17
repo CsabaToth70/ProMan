@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request
+from flask import Flask, render_template, url_for, request, redirect
 from util import json_response
 
 import data_handler
@@ -14,6 +14,7 @@ def index():
     if request.method == 'POST':
         new_title = request.form['title']
         data_handler.add_new_board(new_title)
+        return redirect("/")
     return render_template('index.html')
 
 
