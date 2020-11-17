@@ -1,4 +1,7 @@
-import csv
+from psycopg2.extras import RealDictCursor
+from psycopg2 import sql
+
+import connection
 
 STATUSES_FILE = './data/statuses.csv'
 BOARDS_FILE = './data/boards.csv'
@@ -9,18 +12,13 @@ BOARD_HEADER = ['id', 'title']
 _cache = {}  # We store cached data in this dict to avoid multiple file readings
 
 
-def _read_csv(file_name):
-    """
-    Reads content of a .csv file
-    :param file_name: relative path to data file
-    :return: OrderedDict
-    """
-    with open(file_name) as boards:
-        rows = csv.DictReader(boards, delimiter=',', quotechar='"')
-        formatted_data = []
-        for row in rows:
-            formatted_data.append(dict(row))
-        return formatted_data
+@connection.connection_handler
+def _get_boards(cursor: RealDictCursor):
+    query = """
+        SELECT * FROM boards;
+        """
+    cursor.execute(query)
+    return cursor.fetchall()
 
 
 def _write_csv(file_name, data_dict, header):
@@ -40,7 +38,7 @@ def generate_id(file_name):
     return new_id
 
 
-def _get_data(data_type, file, force):
+def _get_data(data_type, table_function, force):
     """
     Reads defined type of data from file or cache
     :param data_type: key where the data is stored in cache
@@ -49,7 +47,7 @@ def _get_data(data_type, file, force):
     :return: OrderedDict
     """
     if force or data_type not in _cache:
-        _cache[data_type] = _read_csv(file)
+        _cache[data_type] = table_function()
     return _cache[data_type]
 
 
@@ -63,7 +61,7 @@ def get_statuses(force=False):
 
 
 def get_boards(force=False):
-    return _get_data('boards', BOARDS_FILE, force)
+    return _get_data('boards', _get_boards, force)
 
 
 def get_cards(force=False):
