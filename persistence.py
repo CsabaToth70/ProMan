@@ -29,7 +29,12 @@ def _write_csv(file_name, data_dict, header):
         writer.writerow(data_dict)
 
 
-def generate_id(data_list):
+def create_new_public_board(data_dict):
+    _write_csv('./data/boards.csv', data_dict, BOARD_HEADER)
+
+
+def generate_id(file_name):
+    data_list = _read_csv(file_name)
     id_numbers = [int(dict_data['id']) for dict_data in data_list]
     new_id = max(id_numbers) + 1
     return new_id

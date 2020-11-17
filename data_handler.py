@@ -1,6 +1,12 @@
 import persistence
 
 
+def add_new_board(new_title):
+    new_id = persistence.generate_id('./data/boards.csv')
+    new_board = {'id': new_id, 'title': new_title}
+    persistence.create_new_public_board(new_board)
+
+
 def get_card_status(status_id):
     """
     Find the first status matching the given id

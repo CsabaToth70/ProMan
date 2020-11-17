@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, url_for, request
 from util import json_response
 
 import data_handler
@@ -6,11 +6,14 @@ import data_handler
 app = Flask(__name__)
 
 
-@app.route("/")
+@app.route("/", methods=['GET', 'POST'])
 def index():
     """
     This is a one-pager which shows all the boards and cards
     """
+    if request.method == 'POST':
+        new_title = request.form['title']
+        data_handler.add_new_board(new_title)
     return render_template('index.html')
 
 
