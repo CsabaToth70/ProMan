@@ -6,12 +6,14 @@ export let dom = {
         // This function should run once, when the page is loaded.
         const newBoardButton = document.querySelector('.new-board');
         newBoardButton.addEventListener('click', dom.addNewBoardTitle);
+
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
         dataHandler.getBoards(function (boards) {
             dom.showBoards(boards);
         });
+
     },
     showBoards: function (boards) {
         // shows boards appending them to #boards div
@@ -28,6 +30,7 @@ export let dom = {
             let boardContainer = document.querySelector('.board-container');
             boardContainer.insertAdjacentHTML("beforeend", outerHtml);
         }
+        dom.listenForBoardTitleClick();
     },
     loadCards: function (boardId) {
         // retrieves cards and makes showCards called
@@ -44,5 +47,19 @@ export let dom = {
         submitButton.addEventListener('click', () => {
             titleInput.style.display = 'none';
         })
+    },
+    changeBoardName: function (event) {
+        let clickedTitle = event.currentTarget;
+        let newElement = document.createElement('input');
+        newElement.setAttribute("value", `${clickedTitle.textContent}`);
+        clickedTitle.parentNode.replaceChild(newElement, clickedTitle);
+    },
+    listenForBoardTitleClick: function () {
+        let boardNames = document.querySelectorAll('.board-title');
+        for (let boardName of boardNames) {
+            boardName.addEventListener('click', dom.changeBoardName);
+        }
     }
+
 };
+
