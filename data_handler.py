@@ -2,9 +2,7 @@ import persistence
 
 
 def add_new_board(new_title):
-    new_id = persistence.generate_id('./data/boards.csv')
-    new_board = {'id': new_id, 'title': new_title}
-    persistence.create_new_public_board(new_board)
+    persistence.create_new_public_board(new_title)
 
 
 def rename_board(changed_data):

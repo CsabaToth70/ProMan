@@ -27,8 +27,18 @@ def _write_csv(file_name, data_dict, header):
         writer.writerow(data_dict)
 
 
-def create_new_public_board(data_dict):
-    _write_csv('./data/boards.csv', data_dict, BOARD_HEADER)
+@connection.connection_handler
+def _add_new_board(cursor: RealDictCursor, board_title):
+    query = """
+        INSERT INTO boards
+        (title)
+        VALUES (%(board_title)s);
+        """
+    cursor.execute(query, {'board_title': board_title})
+
+
+def create_new_public_board(board_title):
+    _add_new_board(board_title)
 
 
 def generate_id(file_name):

@@ -12,12 +12,8 @@ def index():
     This is a one-pager which shows all the boards and cards
     """
     if request.method == 'POST':
-        new_title = request.form.get('title', None)
-        changed_title = request.form.get('changed-title', None)
-        if new_title:
-            data_handler.add_new_board(new_title)
-        elif changed_title:
-            print(changed_title)
+        new_title = request.form['title']
+        data_handler.add_new_board(new_title)
         return redirect("/")
     return render_template('index.html')
 

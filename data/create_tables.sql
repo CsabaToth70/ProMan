@@ -17,6 +17,9 @@ CREATE TABLE statuses (
     title VARCHAR
 );
 INSERT INTO statuses VALUES (0, 'new'), (1, 'in progress'), (2, 'testing'), (3, 'done');
+INSERT INTO boards (title) VALUES ('Board 1');
+INSERT INTO boards (title) VALUES ('Board 2');
+INSERT INTO boards (title) VALUES ('Board 3');
 INSERT INTO cards VALUES
 (1,1,'new card 1',0,0),
 (2,1,'new card 2',0,1),
@@ -30,5 +33,4 @@ INSERT INTO cards VALUES
 (10,2,'planning',2,0),
 (11,2,'done card 1',3,0),
 (12,2,'done card 1',3,1);
-INSERT INTO boards VALUES (1, 'Board 1'), (2, 'Board 2'), (3, 'Board 3');
 ALTER TABLE ONLY cards ADD CONSTRAINT fk_board_id FOREIGN KEY (board_id) REFERENCES boards(id);
