@@ -1,5 +1,8 @@
+DROP TABLE IF EXISTS cards;
+DROP TABLE IF EXISTS boards;
+DROP TABLE IF EXISTS statuses;
 CREATE TABLE boards (
-    id INT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     title VARCHAR
 );
 CREATE TABLE cards (
