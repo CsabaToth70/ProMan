@@ -16,19 +16,16 @@ export let dom = {
         // it adds necessary event listeners also
 
         for (let board of boards) {
-            let boardTitle = ` <div class="board-title">${board.title}</div>`;
-            const outerHtml = `<div class="board"></div>`;
-            const boardHeader = `<div class="board-header"> ${boardTitle}</div>`
-            const boardColumns = `<div class="board-columns"> BoardColumns</div>`
-
-            let boardsContainer = document.querySelector('.board-container');
-            boardsContainer.insertAdjacentHTML("beforeend", outerHtml);
-            let boardElement = document.querySelector('.board');
-            boardElement.insertAdjacentHTML("beforeend", boardHeader);
-            boardElement.insertAdjacentHTML('beforeend', boardColumns);
+            let boardTitle = `<div class="board-title">${board.title}</div>`;
+            let headerButtons = `
+                <button class="board-add">Add Card</button>
+                <button class="board-toggle"><i class="fas fa-chevron-down"></i></button>`;
+            const boardHeader = `<div class="board-header">${boardTitle}${headerButtons}</div>`;
+            const boardColumns = `<div class="board-columns">BoardColumns</div>`;
+            const outerHtml = `<div class="board">${boardHeader}${boardColumns}</div>`;
+            let boardContainer = document.querySelector('.board-container');
+            boardContainer.insertAdjacentHTML("beforeend", outerHtml);
         }
-
-
     },
     loadCards: function (boardId) {
         // retrieves cards and makes showCards called
