@@ -7,6 +7,10 @@ def add_new_board(new_title):
     persistence.create_new_public_board(new_board)
 
 
+def rename_board(changed_data):
+    print(changed_data)
+
+
 def get_card_status(status_id):
     """
     Find the first status matching the given id

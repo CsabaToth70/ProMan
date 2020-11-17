@@ -18,7 +18,7 @@ def index():
             data_handler.add_new_board(new_title)
         elif changed_title:
             print(changed_title)
-        #return redirect("/")
+        return redirect("/")
     return render_template('index.html')
 
 
@@ -29,6 +29,12 @@ def get_boards():
     All the boards
     """
     return data_handler.get_boards()
+
+
+@app.route("/rename-board")
+def rename_board():
+    changed_data = request.json
+    return data_handler.rename_board(changed_data)
 
 
 @app.route("/get-cards/<int:board_id>")
