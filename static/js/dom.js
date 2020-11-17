@@ -50,16 +50,39 @@ export let dom = {
     },
     changeBoardName: function (event) {
         let clickedTitle = event.currentTarget;
+        let oldBoardName = clickedTitle.textContent;
+        console.log('oldbrardName', oldBoardName);
+        let newForm = document.createElement('form');
+        newForm.setAttribute('method', 'POST');
         let newElement = document.createElement('input');
+        newForm.style.display = 'inline';
+        newElement.setAttribute('name', 'changed-title');
         newElement.setAttribute("value", `${clickedTitle.textContent}`);
-        clickedTitle.parentNode.replaceChild(newElement, clickedTitle);
+
+        let commitButton = document.createElement('button');
+        commitButton.innerHTML = 'Save';
+
+        commitButton.setAttribute('type', 'submit');
+        newForm.appendChild(newElement);
+        newForm.appendChild(commitButton);
+        clickedTitle.parentNode.replaceChild(newForm, clickedTitle);
+        let saveButton = document.querySelector('.board-header form button');
+        console.log('savebutton', saveButton);
+        saveButton.addEventListener('click', dom.listenForInput);
     },
     listenForBoardTitleClick: function () {
         let boardNames = document.querySelectorAll('.board-title');
         for (let boardName of boardNames) {
             boardName.addEventListener('click', dom.changeBoardName);
         }
+    },
+    listenForInput: function (event) {
+        let newElement = event.currentTarget.nextSibling;
+        console.log('nextsibling', newElement);
+            newElement.addEventListener('input', function (event) {
+            let newBoardName = newElement.value;
+            console.log(newBoardName)
+        })
     }
-
 };
 
