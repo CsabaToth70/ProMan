@@ -33,6 +33,19 @@ button{
     padding: 4px 10px;
 }
 
+.new-board {
+    position: absolute;
+    top: 40px;
+    right: 25%;
+}
+
+.new-board-title {
+    position: absolute;
+    top: 40px;
+    right: 10%;
+    display: none;
+}
+
 .board-container{
     max-width: 960px;
     margin: 0 auto;

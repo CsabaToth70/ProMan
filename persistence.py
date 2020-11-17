@@ -4,6 +4,8 @@ STATUSES_FILE = './data/statuses.csv'
 BOARDS_FILE = './data/boards.csv'
 CARDS_FILE = './data/cards.csv'
 
+BOARD_HEADER = ['id', 'title']
+
 _cache = {}  # We store cached data in this dict to avoid multiple file readings
 
 
@@ -19,6 +21,18 @@ def _read_csv(file_name):
         for row in rows:
             formatted_data.append(dict(row))
         return formatted_data
+
+
+def _write_csv(file_name, data_dict, header):
+    with open(file_name, 'a') as boards:
+        writer = csv.DictWriter(boards, fieldnames=header)
+        writer.writerow(data_dict)
+
+
+def generate_id(data_list):
+    id_numbers = [int(dict_data['id']) for dict_data in data_list]
+    new_id = max(id_numbers) + 1
+    return new_id
 
 
 def _get_data(data_type, file, force):

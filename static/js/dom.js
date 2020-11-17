@@ -4,6 +4,8 @@ import {dataHandler} from "./data_handler.js";
 export let dom = {
     init: function () {
         // This function should run once, when the page is loaded.
+        const newBoardButton = document.querySelector('.new-board');
+        newBoardButton.addEventListener('click', dom.addNewBoardTitle);
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
@@ -35,4 +37,12 @@ export let dom = {
         // it adds necessary event listeners also
     },
     // here comes more features
+    addNewBoardTitle: function () {
+        let titleInput = document.querySelector('.new-board-title');
+        titleInput.style.display = 'block';
+        let submitButton = document.querySelector('.new-board-title button');
+        submitButton.addEventListener('click', () => {
+            titleInput.style.display = 'none';
+        })
+    }
 };
