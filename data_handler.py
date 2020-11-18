@@ -6,8 +6,7 @@ def add_new_board(new_title):
 
 
 def rename_board(changed_data):
-    print(changed_data)
-    return changed_data
+    persistence.rename_board_title(changed_data)
 
 
 def get_card_status(status_id):

@@ -3,12 +3,6 @@ from psycopg2 import sql
 
 import connection
 
-STATUSES_FILE = './data/statuses.csv'
-BOARDS_FILE = './data/boards.csv'
-CARDS_FILE = './data/cards.csv'
-
-BOARD_HEADER = ['id', 'title']
-
 _cache = {}  # We store cached data in this dict to avoid multiple file readings
 
 
@@ -21,12 +15,6 @@ def _get_boards(cursor: RealDictCursor):
     return cursor.fetchall()
 
 
-def _write_csv(file_name, data_dict, header):
-    with open(file_name, 'a') as boards:
-        writer = csv.DictWriter(boards, fieldnames=header)
-        writer.writerow(data_dict)
-
-
 @connection.connection_handler
 def _add_new_board(cursor: RealDictCursor, board_title):
     query = """
@@ -37,15 +25,22 @@ def _add_new_board(cursor: RealDictCursor, board_title):
     cursor.execute(query, {'board_title': board_title})
 
 
+@connection.connection_handler
+def _update_board_name(cursor: RealDictCursor, changed_data: dict):
+    query = """
+        UPDATE boards
+        SET title = %(board_title)s
+        WHERE id = %(board_id)s;
+        """
+    cursor.execute(query, {'board_title': changed_data['title'], 'board_id': changed_data['id']})
+
+
 def create_new_public_board(board_title):
     _add_new_board(board_title)
 
 
-def generate_id(file_name):
-    data_list = _read_csv(file_name)
-    id_numbers = [int(dict_data['id']) for dict_data in data_list]
-    new_id = max(id_numbers) + 1
-    return new_id
+def rename_board_title(changed_data):
+    _update_board_name(changed_data)
 
 
 def _get_data(data_type, table_function, force):
