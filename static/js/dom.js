@@ -20,6 +20,7 @@ export let dom = {
             dom.createBoardElements(board, index)
         }
         dom.listenForBoardTitleClick();
+        dom.listenForToggleClick();
     },
     loadCards: function (boardId) {
         // retrieves cards and makes showCards called
@@ -37,7 +38,7 @@ export let dom = {
             <button class="board-add">Add Card</button>
             <button class="board-toggle"><i class="fas fa-chevron-down"></i></button>`;
         const boardHeader = `<div class="board-header" data-board-id="${index+1}">${boardTitle}${headerButtons}</div>`;
-        const boardColumns = `<div class="board-columns">BoardColumns</div>`;
+        const boardColumns = `<div class="board-columns">.</div>`;
         const outerHtml = `<div class="board">${boardHeader}${boardColumns}</div>`;
         let boardContainer = document.querySelector('.board-container');
         boardContainer.insertAdjacentHTML("beforeend", outerHtml);
@@ -94,6 +95,38 @@ export let dom = {
         let boardId = inputField.parentElement.parentElement.dataset.boardId;
         let changedBoard = {'id': boardId, 'title': inputField.value};
         dataHandler.renameBoard(changedBoard);
-    }
-};
+    },
 
+    //********Board view with 4 default columns*********
+
+    createDefaultColumns: function(event) {
+        let clickedToggle = event.currentTarget;
+        let currentBoard = clickedToggle.parentElement.parentElement.querySelector(".board-columns");
+
+            currentBoard.insertAdjacentHTML('afterbegin', `
+            <div class="board-column">
+                    <div class="board-column-title">New</div>
+                    <div class="board-column-content"></div>
+            </div>
+            <div class="board-column">
+                    <div class="board-column-title">In progress</div>
+                    <div class="board-column-content"></div>
+            </div>
+            <div class="board-column">
+                    <div class="board-column-title">Testing</div>
+                    <div class="board-column-content"></div>
+            </div>
+            <div class="board-column">
+                    <div class="board-column-title">Done</div>
+                    <div class="board-column-content"></div>
+            </div>
+            `)
+        },
+
+    listenForToggleClick: function (){
+        let toggles = document.querySelectorAll(".board-toggle");
+        for (let toggle of toggles){
+            toggle.addEventListener("click", dom.createDefaultColumns);
+        }
+    },
+}
