@@ -12,8 +12,9 @@ def index():
     This is a one-pager which shows all the boards and cards
     """
     if request.method == 'POST':
-        new_title = request.form['title']
-        data_handler.add_new_board(new_title)
+        new_title = request.form.get('title', None)
+        if new_title:
+            data_handler.add_new_board(new_title)
         return redirect("/")
     return render_template('index.html')
 
@@ -27,7 +28,7 @@ def get_boards():
     return data_handler.get_boards()
 
 
-@app.route("/rename-board")
+@app.route("/rename-board", methods=['POST'])
 def rename_board():
     changed_data = request.json
     return data_handler.rename_board(changed_data)

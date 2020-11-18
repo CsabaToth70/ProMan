@@ -92,7 +92,7 @@ export let dom = {
     getChangedBoardTitle: function () {
         let inputField = document.querySelector('.board-header form input')
         let boardId = inputField.parentElement.parentElement.dataset.boardId;
-        let changedBoard = {'id': boardId, 'title': inputField};
+        let changedBoard = {'id': boardId, 'title': inputField.value};
         dataHandler.renameBoard(changedBoard);
     }
 };
