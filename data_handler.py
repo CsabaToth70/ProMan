@@ -9,6 +9,14 @@ def rename_board(changed_data):
     persistence.rename_board_title(changed_data)
 
 
+def get_all_statuses():
+    return persistence.get_statuses(force=True)
+
+
+def add_new_status(status):
+    persistence.create_new_status(status)
+
+
 def get_card_status(status_id):
     """
     Find the first status matching the given id

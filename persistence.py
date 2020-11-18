@@ -9,7 +9,8 @@ _cache = {}  # We store cached data in this dict to avoid multiple file readings
 @connection.connection_handler
 def _get_boards(cursor: RealDictCursor):
     query = """
-        SELECT * FROM boards;
+        SELECT * FROM boards
+        ORDER BY id;
         """
     cursor.execute(query)
     return cursor.fetchall()
@@ -35,12 +36,36 @@ def _update_board_name(cursor: RealDictCursor, changed_data: dict):
     cursor.execute(query, {'board_title': changed_data['title'], 'board_id': changed_data['id']})
 
 
+@connection.connection_handler
+def _add_new_status(cursor: RealDictCursor, status):
+    query = """
+        INSERT INTO statuses
+        (id, title)
+        VALUES (NEXTVAL('statuses_id_seq'), %(status)s);
+        """
+    cursor.execute(query, {'status': status})
+
+
+@connection.connection_handler
+def _get_statuses(cursor: RealDictCursor):
+    query = """
+        SELECT * FROM statuses
+        ORDER BY id DESC;
+        """
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
 def create_new_public_board(board_title):
     _add_new_board(board_title)
 
 
 def rename_board_title(changed_data):
     _update_board_name(changed_data)
+
+
+def create_new_status(status):
+    _add_new_status(status)
 
 
 def _get_data(data_type, table_function, force):
@@ -62,7 +87,7 @@ def clear_cache():
 
 
 def get_statuses(force=False):
-    return _get_data('statuses', STATUSES_FILE, force)
+    return _get_data('statuses', _get_statuses, force)
 
 
 def get_boards(force=False):

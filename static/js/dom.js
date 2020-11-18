@@ -21,6 +21,12 @@ export let dom = {
         }
         dom.listenForBoardTitleClick();
         dom.listenForToggleClick();
+        dom.loadStatuses();
+    },
+    loadStatuses: function () {
+        dataHandler.getStatuses(function (statuses) {
+            dom.showColumns(statuses);
+        });
     },
     loadCards: function (boardId) {
         // retrieves cards and makes showCards called
@@ -35,7 +41,12 @@ export let dom = {
     createBoardElements: function (board, index) {
         let boardTitle = `<span class="board-title">${board.title}</span>`;
         let headerButtons = `
-            <button class="board-add">Add Card</button>
+            <button class="board-add-card">Add Card</button>
+            <button class="board-add-column">Add new column</button>
+            <form method="post" class="new-status-title">
+                <input type="text" name="status" required>
+                <button type="submit">Save</button>
+            </form>
             <button class="board-toggle"><i class="fas fa-chevron-down"></i></button>`;
         const boardHeader = `<div class="board-header" data-board-id="${index+1}">${boardTitle}${headerButtons}</div>`;
         const boardColumns = `<div class="board-columns"></div>`;
@@ -52,7 +63,6 @@ export let dom = {
         let submitButton = document.querySelector('.new-board-title button');
         submitButton.addEventListener('click', () => {
             titleInput.style.display = 'none';
-
         })
     },
 
@@ -98,50 +108,84 @@ export let dom = {
         dataHandler.renameBoard(changedBoard);
     },
 
-    //********Board view with 4 default columns*********
+    // ***** Board view with 4 default columns *****
 
-    createDefaultColumns: function(event) {
-        let clickedToggle = event.currentTarget;
-        //let boardID = clickedToggle.parentElement.dataset.boardId;
-        let currentBoard = clickedToggle.parentElement.parentElement.querySelector(".board-columns");
-
-            currentBoard.insertAdjacentHTML('afterbegin', `
-            <div class="board-column">
-                    <div class="board-column-title">New</div>
+    createColumns: function(status) {
+        let boards = document.querySelectorAll('.board-columns');
+        for (let board of boards) {
+            dom.setBoardVisibility(board, 'none');
+            board.insertAdjacentHTML('afterbegin', `
+                <div class="board-column">
+                    <div class="board-column-title">${status.title}</div>
                     <div class="board-column-content"></div>
-            </div>
-            <div class="board-column">
-                    <div class="board-column-title">In progress</div>
-                    <div class="board-column-content"></div>
-            </div>
-            <div class="board-column">
-                    <div class="board-column-title">Testing</div>
-                    <div class="board-column-content"></div>
-            </div>
-            <div class="board-column">
-                    <div class="board-column-title">Done</div>
-                    <div class="board-column-content"></div>
-            </div>
-            `)
-         clickedToggle.removeEventListener("click", dom.createDefaultColumns);
-         let currentBoardTitles = clickedToggle.parentElement.children;
-         let currentBoardTitle = currentBoardTitles['0'];
-         currentBoardTitle.removeEventListener("click", dom.changeBoardName);
-         currentBoardTitle.addEventListener('click', dom.closeBoard);
-        },
-
-    listenForToggleClick: function (){
-        let toggles = document.querySelectorAll(".board-toggle");
-        for (let toggle of toggles){
-            toggle.addEventListener("click", dom.createDefaultColumns);
+                </div>`)
         }
     },
-    closeBoard: function (event) {
-            let toBeClosedBoard = event.currentTarget.parentElement.parentElement.querySelector(".board-columns");
-            toBeClosedBoard.style.display = "none";
-            dom.listenForToggleClick();
-            console.log()
-            dom.listenForBoardTitleClick();
+    listenForToggleClick: function () {
+        let toggles = document.querySelectorAll(".board-toggle");
+        for (let toggle of toggles) {
+            toggle.addEventListener("click", dom.showSelectedBoard);
+        }
+    },
+    showSelectedBoard: function(event) {
+        let currentBoardContainer = dom.getCurrentBoardContainer(event);
+        let currentBoard = currentBoardContainer.querySelector('.board-columns');
+        let currentBoardTitle = currentBoardContainer.querySelector('.board-title');
+        let clickedToggle = currentBoardContainer.querySelector('.board-toggle');
 
-    }
+        dom.setBoardVisibility(currentBoard, 'flex');
+        dom.showNewColumnButton(event);
+        clickedToggle.removeEventListener("click", dom.createColumns);
+        currentBoardTitle.removeEventListener("click", dom.changeBoardName);
+        currentBoardTitle.addEventListener('click', dom.closeBoard);
+    },
+    getCurrentBoardContainer: function(event) {
+        let currentHeader = event.currentTarget.parentElement;
+        return currentHeader.parentElement;
+    },
+    setBoardVisibility(currentBoard, displayValue) {
+        currentBoard.style.display = displayValue;
+    },
+    closeBoard: function (event) {
+        let currentBoardContainer = dom.getCurrentBoardContainer(event);
+        let toBeClosedBoard = currentBoardContainer.querySelector('.board-columns');
+        dom.setBoardVisibility(toBeClosedBoard, 'none');
+        dom.hideNewColumnButtons();
+        dom.listenForToggleClick();
+        dom.listenForBoardTitleClick();
+    },
+
+    // ***** Board view with dynamic columns *****
+
+    hideNewColumnButtons: function () {
+        let newColumnButtons = document.querySelectorAll('.board-add-column');
+        for (let newColumnButton of newColumnButtons) {
+            newColumnButton.style.display = 'none';
+        }
+    },
+    showNewColumnButton: function (event) {
+        let currentBoardContainer = dom.getCurrentBoardContainer(event);
+        let newColumnButton = currentBoardContainer.querySelector('.board-add-column');
+        newColumnButton.style.display = 'inline-block';
+        newColumnButton.addEventListener('click', dom.showStatusInput)
+    },
+    showStatusInput: function (event) {
+        let currentBoardContainer = dom.getCurrentBoardContainer(event);
+        let statusInput = currentBoardContainer.querySelector('.new-status-title');
+        statusInput.style.display = 'inline-block';
+        let saveButton = document.querySelector('.new-status-title button');
+        saveButton.addEventListener('click', dom.getNewStatus);
+    },
+    showColumns: function (statuses) {
+        for (let status of statuses) {
+            dom.createColumns(status)
+        }
+    },
+    getNewStatus: function (event) {
+        let button = event.currentTarget;
+        let inputField = button.parentElement.querySelector('input');
+        let newStatus = inputField.value;
+        dataHandler.addStatus(newStatus);
+    },
+
 }
