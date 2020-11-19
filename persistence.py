@@ -4,7 +4,7 @@ from psycopg2 import sql
 import connection
 
 _cache = {}  # We store cached data in this dict to avoid multiple file readings
-
+CARDS_FILE =''
 
 @connection.connection_handler
 def _get_boards(cursor: RealDictCursor):

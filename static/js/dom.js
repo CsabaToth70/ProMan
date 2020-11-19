@@ -234,6 +234,7 @@ export let dom = {
     },
     closeColumnInput: function (event) {
         dom.getOriginalColumnTitle(event);
+        dom.listenForColumnTitleClick();
     },
     getOriginalColumnTitle: function (event) {
         let inputForm = event.currentTarget;
