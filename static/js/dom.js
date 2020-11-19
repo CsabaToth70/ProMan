@@ -56,14 +56,21 @@ export let dom = {
         for (let boardHeader of boardHeaders) {
             let targetBoardId = boardHeader.dataset.boardId;
             if (targetBoardId === boardId.toString()) {
-                let currentColumnContent = boardHeader.parentElement.querySelector(".board-column-content")
-                currentColumnContent.insertAdjacentHTML('afterbegin',
-                    `<div class="card">
+                let statusTitles = boardHeader.parentElement.querySelectorAll(".board-column-title");
+                for (let statusTitle of statusTitles) {
+                    if (statusTitle.textContent === card['status_id']) {
+                        let currentColumnContent = statusTitle.parentElement.querySelector(".board-column-content")
+                        currentColumnContent.insertAdjacentHTML('afterbegin',
+                            `<div class="card">
                                <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
                                <div class="card-title">${card.title}</div>
                         </div> 
                         `)
+                    }
+
+                }
             }
+
         }
     },
 
