@@ -33,17 +33,40 @@ export let dom = {
         // retrieves cards and makes showCards called
         //dataHandler.getCardsByBoardIdSendId(boardId);
         dataHandler.getCardsByBoardId(boardId, function (cards) {
-             dom.showCards(cards);
+            dom.showCards(cards, boardId);
 
-         })
+        })
 
     },
-    showCards: function (cards) {
+    showCards: function (cards, boardId) {
         console.log('cards', cards);
+        for (let card of cards) {
+            dom.createCardElements(card, boardId)
+        }
 
         // shows the cards of a board
         // it adds necessary event listeners also
     },
+
+    //****** Cards' list overview *********
+
+    createCardElements: function (card, boardId) {
+
+        let boardHeaders = document.querySelectorAll(".board-header");
+        for (let boardHeader of boardHeaders) {
+            let targetBoardId = boardHeader.dataset.boardId;
+            if (targetBoardId === boardId.toString()) {
+                let currentColumnContent = boardHeader.parentElement.querySelector(".board-column-content")
+                currentColumnContent.insertAdjacentHTML('afterbegin',
+                    `<div class="card">
+                               <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
+                               <div class="card-title">${card.title}</div>
+                        </div> 
+                        `)
+            }
+        }
+    },
+
 
     // ***** Boards' list overview *****
 
@@ -119,7 +142,7 @@ export let dom = {
 
     // ***** Board view with 4 default columns *****
 
-    createColumns: function(status) {
+    createColumns: function (status) {
         let boards = document.querySelectorAll('.board-columns');
         for (let board of boards) {
             dom.setBoardVisibility(board, 'none');
@@ -136,7 +159,7 @@ export let dom = {
             toggle.addEventListener("click", dom.showSelectedBoard);
         }
     },
-    showSelectedBoard: function(event) {
+    showSelectedBoard: function (event) {
         let currentBoardContainer = dom.getCurrentBoardContainer(event);
         let currentBoard = currentBoardContainer.querySelector('.board-columns');
         let currentBoardTitle = currentBoardContainer.querySelector('.board-title');
@@ -151,8 +174,9 @@ export let dom = {
         let boardId = event.currentTarget.parentElement.dataset['boardId'];
         console.log(boardId);
         dom.loadCards(boardId);
+
     },
-    getCurrentBoardContainer: function(event) {
+    getCurrentBoardContainer: function (event) {
         let currentHeader = event.currentTarget.parentElement;
         return currentHeader.parentElement;
     },
