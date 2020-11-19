@@ -43,10 +43,10 @@ export let dom = {
         let headerButtons = `
             <button class="board-add-card">Add Card</button>
             <button class="board-add-column">Add new column</button>
-            <form method="post" class="new-status-title">
+            <div class="new-status-title">
                 <input type="text" name="status" required>
                 <button type="submit">Save</button>
-            </form>
+            </div>
             <button class="board-toggle"><i class="fas fa-chevron-down"></i></button>`;
         const boardHeader = `<div class="board-header" data-board-id="${index+1}">${boardTitle}${headerButtons}</div>`;
         const boardColumns = `<div class="board-columns"></div>`;
@@ -76,36 +76,47 @@ export let dom = {
     },
     changeBoardName: function (event) {
         let clickedTitle = event.currentTarget;
-        let inputField = dom.getBoardTitleForm(event)
-        clickedTitle.parentNode.replaceChild(inputField, clickedTitle);
-        let saveButton = document.querySelector('.board-header form button');
+        let renameDiv = dom.getBoardTitleDiv(event);
+        clickedTitle.classList.add('hidden');
+        clickedTitle.parentElement.insertAdjacentElement('beforeend', renameDiv);
+        let saveButton = document.querySelector('.board-header .rename-button');
         saveButton.addEventListener('click', dom.getChangedBoardTitle);
     },
-    getBoardTitleForm: function (event) {
+    getBoardTitleDiv: function (event) {
         let clickedTitle = event.currentTarget;
 
-        let newForm = document.createElement('form');
-        newForm.setAttribute('method', 'POST');
-        newForm.style.display = 'inline';
+        let newDiv = document.createElement('div');
+        newDiv.classList.add('rename-div');
+        newDiv.style.display = 'inline';
 
         let newInput = document.createElement('input');
+        newInput.classList.add('rename-input');
         newInput.setAttribute('name', 'changed-title');
         newInput.setAttribute("value", `${clickedTitle.textContent}`);
 
         let newButton = document.createElement('button');
+        newButton.classList.add('rename-button');
         newButton.innerHTML = 'Save';
-        newButton.setAttribute('type', 'submit');
 
-        newForm.appendChild(newInput);
-        newForm.appendChild(newButton);
+        newDiv.appendChild(newInput);
+        newDiv.appendChild(newButton);
 
-        return newForm;
+        return newDiv;
     },
     getChangedBoardTitle: function () {
-        let inputField = document.querySelector('.board-header form input')
-        let boardId = inputField.parentElement.parentElement.dataset.boardId;
+        let inputField = document.querySelector('.board-header .rename-input')
+        let boardId = inputField.closest('.board-header').dataset.boardId;
         let changedBoard = {'id': boardId, 'title': inputField.value};
         dataHandler.renameBoard(changedBoard);
+
+        const renameDiv = inputField.closest('.rename-div');
+        const boardTitle = renameDiv
+            .closest('.board-header')
+            .querySelector('.board-title');
+
+        boardTitle.textContent = changedBoard.title;
+        boardTitle.classList.remove('hidden');
+        renameDiv.remove();
     },
 
     // ***** Board view with 4 default columns *****

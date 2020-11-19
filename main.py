@@ -35,9 +35,11 @@ def get_statuses():
 
 
 @app.route("/rename-board", methods=['POST'])
+@json_response
 def rename_board():
     changed_data = request.json
-    return data_handler.rename_board(changed_data)
+    data_handler.rename_board(changed_data)
+    return ""
 
 
 @app.route("/rename-column", methods=['POST'])
