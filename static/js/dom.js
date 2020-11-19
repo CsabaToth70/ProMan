@@ -55,6 +55,14 @@ export let dom = {
             }
         }
     },
+    clearCards: function () {
+        let columnContents = document.querySelectorAll(".board-column-content");
+        for (let columnContent of columnContents) {
+            let emptyContent = document.createElement('div');
+            emptyContent.setAttribute('class', 'board-column-content');
+            columnContent.parentNode.replaceChild(emptyContent, columnContent);
+        }
+    },
 
     // ***** Boards' list overview *****
 
@@ -178,6 +186,7 @@ export let dom = {
         dom.hideNewColumnButtons();
         dom.listenForToggleClick();
         dom.listenForBoardTitleClick();
+        dom.clearCards();
     },
 
     // ***** Board view with dynamic columns *****
