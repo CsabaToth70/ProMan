@@ -1,23 +1,18 @@
-// It uses data_handler.js to visualize elements
 import {dataHandler} from "./data_handler.js";
 
 export let dom = {
     init: function () {
-        // This function should run once, when the page is loaded.
         const newBoardButton = document.querySelector('.new-board');
         newBoardButton.addEventListener('click', dom.addNewBoardTitle);
     },
     loadBoards: function () {
-        // retrieves boards and makes showBoards called
         dataHandler.getBoards(function (boards) {
             dom.showBoards(boards);
         });
     },
     showBoards: function (boards) {
-        // shows boards appending them to #boards div
-        // it adds necessary event listeners also
-        for (let [index, board] of boards.entries()) {
-            dom.createBoardElements(board, index)
+        for (let board of boards) {
+            dom.createBoardElements(board);
         }
         dom.listenForBoardTitleClick();
         dom.listenForToggleClick();
@@ -29,26 +24,59 @@ export let dom = {
         });
     },
     loadCards: function (boardId) {
-        // retrieves cards and makes showCards called
+        dataHandler.getCardsByBoardId(boardId, function (cards) {
+            dom.showCards(cards, boardId);
+        })
     },
-    showCards: function (cards) {
-        // shows the cards of a board
-        // it adds necessary event listeners also
+    showCards: function (cards, boardId) {
+        for (let card of cards) {
+            dom.createCardElements(card, boardId)
+        }
+    },
+
+    //****** Cards' list overview *********
+
+    createCardElements: function (card, boardId) {
+        let boardHeaders = document.querySelectorAll(".board-header");
+        for (let boardHeader of boardHeaders) {
+            let targetBoardId = boardHeader.dataset.boardId;
+            if (targetBoardId === boardId.toString()) {
+                let statusTitles = boardHeader.parentElement.querySelectorAll(".board-column-title");
+                for (let statusTitle of statusTitles) {
+                    if (statusTitle.textContent === card['status_id']) {
+                        let currentColumnContent = statusTitle.parentElement.querySelector(".board-column-content");
+                        currentColumnContent.insertAdjacentHTML('afterbegin',
+                            `<div class="card">
+                                       <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
+                                       <div class="card-title">${card.title}</div>
+                                </div>`)
+                    }
+                }
+            }
+        }
+    },
+    clearCards: function () {
+        let columnContents = document.querySelectorAll(".board-column-content");
+        for (let columnContent of columnContents) {
+            let emptyContent = document.createElement('div');
+            emptyContent.setAttribute('class', 'board-column-content');
+            columnContent.parentNode.replaceChild(emptyContent, columnContent);
+        }
     },
 
     // ***** Boards' list overview *****
 
-    createBoardElements: function (board, index) {
+    createBoardElements: function (board) {
         let boardTitle = `<span class="board-title">${board.title}</span>`;
         let headerButtons = `
-            <button class="board-add-card">Add Card</button>
+            <button class="board-add-card">Create new card</button>
             <button class="board-add-column">Add new column</button>
             <div class="new-status-title">
                 <input type="text" name="status" required>
                 <button type="submit">Save</button>
             </div>
             <button class="board-toggle"><i class="fas fa-chevron-down"></i></button>`;
-        const boardHeader = `<div class="board-header" data-board-id="${index+1}">${boardTitle}${headerButtons}</div>`;
+        const boardHeader = `<div class="board-header" data-board-id=${board.id}>${boardTitle}${headerButtons}</div>`;
         const boardColumns = `<div class="board-columns"></div>`;
         const outerHtml = `<section class="board">${boardHeader}${boardColumns}</section>`;
         let boardContainer = document.querySelector('.board-container');
@@ -121,7 +149,7 @@ export let dom = {
 
     // ***** Board view with 4 default columns *****
 
-    createColumns: function(status) {
+    createColumns: function (status) {
         let boards = document.querySelectorAll('.board-columns');
         for (let board of boards) {
             dom.setBoardVisibility(board, 'none');
@@ -138,7 +166,7 @@ export let dom = {
             toggle.addEventListener("click", dom.showSelectedBoard);
         }
     },
-    showSelectedBoard: function(event) {
+    showSelectedBoard: function (event) {
         let currentBoardContainer = dom.getCurrentBoardContainer(event);
         let currentBoard = currentBoardContainer.querySelector('.board-columns');
         let currentBoardTitle = currentBoardContainer.querySelector('.board-title');
@@ -150,8 +178,12 @@ export let dom = {
         currentBoardTitle.removeEventListener("click", dom.changeBoardName);
         currentBoardTitle.addEventListener('click', dom.closeBoard);
         dom.listenForColumnTitleClick();
+
+        let boardId = event.currentTarget.parentElement.dataset['boardId'];
+        dom.loadCards(boardId);
+        clickedToggle.removeEventListener("click", dom.showSelectedBoard);
     },
-    getCurrentBoardContainer: function(event) {
+    getCurrentBoardContainer: function (event) {
         let currentHeader = event.currentTarget.parentElement;
         return currentHeader.parentElement;
     },
@@ -165,6 +197,7 @@ export let dom = {
         dom.hideNewColumnButtons();
         dom.listenForToggleClick();
         dom.listenForBoardTitleClick();
+        dom.clearCards();
     },
 
     // ***** Board view with dynamic columns *****
