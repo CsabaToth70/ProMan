@@ -8,9 +8,6 @@ app = Flask(__name__)
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
-    """
-    This is a one-pager which shows all the boards and cards
-    """
     if request.method == 'POST':
         new_title = request.form.get('title', None)
         if new_title:
@@ -23,13 +20,6 @@ def index():
 @json_response
 def get_boards():
     return data_handler.get_boards()
-
-
-@app.route("/get-cards/<boardId>")
-@json_response
-def get_cards(boardId):
-    print(boardId)
-    return data_handler.get_cards_for_board(boardId)
 
 
 @app.route("/get-statuses")
@@ -59,10 +49,6 @@ def add_status():
 @app.route("/get-cards/<int:board_id>", methods=['GET', 'POST'])
 @json_response
 def get_cards_for_board(board_id):
-    """
-    All cards that belongs to a board
-    :param board_id: id of the parent board
-    """
     return data_handler.get_cards_for_board(board_id)
 
 

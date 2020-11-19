@@ -1,22 +1,16 @@
-// It uses data_handler.js to visualize elements
 import {dataHandler} from "./data_handler.js";
 
 export let dom = {
     init: function () {
-        // This function should run once, when the page is loaded.
         const newBoardButton = document.querySelector('.new-board');
         newBoardButton.addEventListener('click', dom.addNewBoardTitle);
     },
     loadBoards: function () {
-        // retrieves boards and makes showBoards called
         dataHandler.getBoards(function (boards) {
             dom.showBoards(boards);
         });
     },
     showBoards: function (boards) {
-        // shows boards appending them to #boards div
-        // it adds necessary event listeners also
-
         for (let board of boards) {
             dom.createBoardElements(board);
         }
@@ -30,28 +24,19 @@ export let dom = {
         });
     },
     loadCards: function (boardId) {
-        // retrieves cards and makes showCards called
-        //dataHandler.getCardsByBoardIdSendId(boardId);
         dataHandler.getCardsByBoardId(boardId, function (cards) {
             dom.showCards(cards, boardId);
-
         })
-
     },
     showCards: function (cards, boardId) {
-        console.log('cards', cards);
         for (let card of cards) {
             dom.createCardElements(card, boardId)
         }
-
-        // shows the cards of a board
-        // it adds necessary event listeners also
     },
 
     //****** Cards' list overview *********
 
     createCardElements: function (card, boardId) {
-
         let boardHeaders = document.querySelectorAll(".board-header");
         for (let boardHeader of boardHeaders) {
             let targetBoardId = boardHeader.dataset.boardId;
@@ -59,21 +44,17 @@ export let dom = {
                 let statusTitles = boardHeader.parentElement.querySelectorAll(".board-column-title");
                 for (let statusTitle of statusTitles) {
                     if (statusTitle.textContent === card['status_id']) {
-                        let currentColumnContent = statusTitle.parentElement.querySelector(".board-column-content")
+                        let currentColumnContent = statusTitle.parentElement.querySelector(".board-column-content");
                         currentColumnContent.insertAdjacentHTML('afterbegin',
                             `<div class="card">
-                               <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
-                               <div class="card-title">${card.title}</div>
-                        </div> 
-                        `)
+                                       <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
+                                       <div class="card-title">${card.title}</div>
+                                </div>`)
                     }
-
                 }
             }
-
         }
     },
-
 
     // ***** Boards' list overview *****
 
@@ -178,10 +159,10 @@ export let dom = {
         currentBoardTitle.removeEventListener("click", dom.changeBoardName);
         currentBoardTitle.addEventListener('click', dom.closeBoard);
         dom.listenForColumnTitleClick();
-        let boardId = event.currentTarget.parentElement.dataset['boardId'];
-        console.log(boardId);
-        dom.loadCards(boardId);
 
+        let boardId = event.currentTarget.parentElement.dataset['boardId'];
+        dom.loadCards(boardId);
+        clickedToggle.removeEventListener("click", dom.showSelectedBoard);
     },
     getCurrentBoardContainer: function (event) {
         let currentHeader = event.currentTarget.parentElement;
