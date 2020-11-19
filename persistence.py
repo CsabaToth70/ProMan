@@ -66,6 +66,15 @@ def _get_statuses(cursor: RealDictCursor):
     return cursor.fetchall()
 
 
+@connection.connection_handler
+def _get_cards(cursor: RealDictCursor):
+    query = """
+        SELECT * FROM cards;
+        """
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
 def create_new_public_board(board_title):
     _add_new_board(board_title)
 
@@ -109,4 +118,4 @@ def get_boards(force=False):
 
 
 def get_cards(force=False):
-    return _get_data('cards', CARDS_FILE, force)
+    return _get_data('cards', _get_cards, force)

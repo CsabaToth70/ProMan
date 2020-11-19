@@ -12,6 +12,7 @@ export let dataHandler = {
         fetch(url, {
             method: 'GET',
             credentials: 'same-origin'
+
         })
         .then(response => response.json())  // parse the response as JSON
         .then(json_response => callback(json_response));  // Call the `callback` with the returned object
@@ -52,7 +53,16 @@ export let dataHandler = {
     getStatus: function (statusId, callback) {
         // the status is retrieved and then the callback function is called with the status
     },
+    // getCardsByBoardIdSendId: function(boardId) {
+    //       console.log('datahandler', boardId);
+    //       this._api_post('/get-cards', boardId);
+    // },
+
     getCardsByBoardId: function (boardId, callback) {
+            this._api_get(`/get-cards/${boardId}`,  (response) => {
+            this._data['cards'] = response;
+            callback(response);
+        }, boardId);
         // the cards are retrieved and then the callback function is called with the cards
     },
     getCard: function (cardId, callback) {

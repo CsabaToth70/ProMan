@@ -1,7 +1,7 @@
 from flask import Flask, render_template, url_for, request, redirect
-from util import json_response
 
 import data_handler
+from util import json_response
 
 app = Flask(__name__)
 
@@ -22,10 +22,14 @@ def index():
 @app.route("/get-boards")
 @json_response
 def get_boards():
-    """
-    All the boards
-    """
     return data_handler.get_boards()
+
+
+@app.route("/get-cards/<boardId>")
+@json_response
+def get_cards(boardId):
+    print(boardId)
+    return data_handler.get_cards_for_board(boardId)
 
 
 @app.route("/get-statuses")
@@ -52,9 +56,9 @@ def add_status():
     return data_handler.add_new_status(new_status)
 
 
-@app.route("/get-cards/<int:board_id>")
+@app.route("/get-cards/<int:board_id>", methods=['GET', 'POST'])
 @json_response
-def get_cards_for_board(board_id: int):
+def get_cards_for_board(board_id):
     """
     All cards that belongs to a board
     :param board_id: id of the parent board

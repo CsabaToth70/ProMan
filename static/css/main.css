@@ -70,12 +70,13 @@ section.board{
     margin: 13px;
     display: inline-block;
     font-size: 20px;
+
 }
 .board-title, .board-add-card, .board-add-column, .new-status-title, .board-toggle{
     display: inline-block;
 }
 
-.board-add-column, .new-status-title {
+.board-add-column, .new-status-title, .board-add-card {
     display: none;
 }
 

@@ -16,8 +16,9 @@ export let dom = {
     showBoards: function (boards) {
         // shows boards appending them to #boards div
         // it adds necessary event listeners also
-        for (let [index, board] of boards.entries()) {
-            dom.createBoardElements(board, index)
+
+        for (let board of boards) {
+            dom.createBoardElements(board);
         }
         dom.listenForBoardTitleClick();
         dom.listenForToggleClick();
@@ -30,25 +31,33 @@ export let dom = {
     },
     loadCards: function (boardId) {
         // retrieves cards and makes showCards called
+        //dataHandler.getCardsByBoardIdSendId(boardId);
+        dataHandler.getCardsByBoardId(boardId, function (cards) {
+             dom.showCards(cards);
+
+         })
+
     },
     showCards: function (cards) {
+        console.log('cards', cards);
+
         // shows the cards of a board
         // it adds necessary event listeners also
     },
 
     // ***** Boards' list overview *****
 
-    createBoardElements: function (board, index) {
+    createBoardElements: function (board) {
         let boardTitle = `<span class="board-title">${board.title}</span>`;
         let headerButtons = `
-            <button class="board-add-card">Add Card</button>
+            <button class="board-add-card">Create new card</button>
             <button class="board-add-column">Add new column</button>
             <form method="post" class="new-status-title">
                 <input type="text" name="status" required>
                 <button type="submit">Save</button>
             </form>
             <button class="board-toggle"><i class="fas fa-chevron-down"></i></button>`;
-        const boardHeader = `<div class="board-header" data-board-id="${index+1}">${boardTitle}${headerButtons}</div>`;
+        const boardHeader = `<div class="board-header" data-board-id=${board.id}>${boardTitle}${headerButtons}</div>`;
         const boardColumns = `<div class="board-columns"></div>`;
         const outerHtml = `<section class="board">${boardHeader}${boardColumns}</section>`;
         let boardContainer = document.querySelector('.board-container');
@@ -139,6 +148,9 @@ export let dom = {
         currentBoardTitle.removeEventListener("click", dom.changeBoardName);
         currentBoardTitle.addEventListener('click', dom.closeBoard);
         dom.listenForColumnTitleClick();
+        let boardId = event.currentTarget.parentElement.dataset['boardId'];
+        console.log(boardId);
+        dom.loadCards(boardId);
     },
     getCurrentBoardContainer: function(event) {
         let currentHeader = event.currentTarget.parentElement;
