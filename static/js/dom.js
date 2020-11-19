@@ -138,6 +138,7 @@ export let dom = {
         clickedToggle.removeEventListener("click", dom.createColumns);
         currentBoardTitle.removeEventListener("click", dom.changeBoardName);
         currentBoardTitle.addEventListener('click', dom.closeBoard);
+        dom.listenForColumnTitleClick();
     },
     getCurrentBoardContainer: function(event) {
         let currentHeader = event.currentTarget.parentElement;
@@ -186,6 +187,52 @@ export let dom = {
         let inputField = button.parentElement.querySelector('input');
         let newStatus = inputField.value;
         dataHandler.addStatus(newStatus);
+    },
+
+    // ***** Rename columns *****
+
+    listenForColumnTitleClick: function () {
+        let columnNames = document.querySelectorAll('.board-column-title');
+        for (let columnName of columnNames) {
+            columnName.addEventListener('click', dom.changeColumnName);
+        }
+    },
+    changeColumnName: function (event) {
+        let clickedTitle = event.currentTarget;
+        let inputField = dom.getColumnTitleForm(event)
+        clickedTitle.parentNode.replaceChild(inputField, clickedTitle);
+        inputField.addEventListener('keypress', dom.handleEnter);
+    },
+    getColumnTitleForm: function (event) {
+        let clickedTitle = event.currentTarget;
+
+        let newForm = document.createElement('form');
+        newForm.setAttribute('method', 'POST');
+        newForm.style.display = 'inline';
+
+        let newInput = document.createElement('input');
+        newInput.setAttribute('name', 'changed-column-title');
+        newInput.setAttribute("value", `${clickedTitle.textContent}`);
+
+        newForm.appendChild(newInput);
+        return newForm;
+    },
+    handleEnter: function (event) {
+        if (event.key === 'Enter') {
+            dom.getChangedColumnTitle(event);
+        }
+    },
+    getChangedColumnTitle: function (event) {
+        let changedColumn = {'original_title': event.target.defaultValue, 'new_title': event.target.value};
+        dataHandler.renameColumn(changedColumn);
+    },
+    handleEscape: function (event) {
+        if (event.key === 'Esc') {
+            dom.closeColumnInput();
+        }
+    },
+    closeColumnInput: function () {
+        console.log('escape')
     },
 
 }

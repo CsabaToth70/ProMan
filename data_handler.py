@@ -9,6 +9,10 @@ def rename_board(changed_data):
     persistence.rename_board_title(changed_data)
 
 
+def rename_column(changed_data):
+    persistence.rename_column_title(changed_data)
+
+
 def get_all_statuses():
     return persistence.get_statuses(force=True)
 

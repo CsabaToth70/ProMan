@@ -71,4 +71,7 @@ export let dataHandler = {
     addStatus: function (newStatus) {
         this._api_post('/add-status', newStatus);
     },
+    renameColumn: function (changedColumnData) {
+        this._api_post('/rename-column', changedColumnData);
+    },
 };

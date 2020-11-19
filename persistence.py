@@ -37,6 +37,16 @@ def _update_board_name(cursor: RealDictCursor, changed_data: dict):
 
 
 @connection.connection_handler
+def _update_column_name(cursor: RealDictCursor, changed_data: dict):
+    query = """
+        UPDATE statuses
+        SET title = %(new_title)s
+        WHERE title = %(original_title)s;
+        """
+    cursor.execute(query, {'new_title': changed_data['new_title'], 'original_title': changed_data['original_title']})
+
+
+@connection.connection_handler
 def _add_new_status(cursor: RealDictCursor, status):
     query = """
         INSERT INTO statuses
@@ -62,6 +72,10 @@ def create_new_public_board(board_title):
 
 def rename_board_title(changed_data):
     _update_board_name(changed_data)
+
+
+def rename_column_title(changed_data):
+    _update_column_name(changed_data)
 
 
 def create_new_status(status):

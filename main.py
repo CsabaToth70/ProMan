@@ -40,6 +40,12 @@ def rename_board():
     return data_handler.rename_board(changed_data)
 
 
+@app.route("/rename-column", methods=['POST'])
+def rename_column():
+    changed_data = request.json
+    return data_handler.rename_column(changed_data)
+
+
 @app.route("/add-status", methods=['POST'])
 def add_status():
     new_status = request.json
