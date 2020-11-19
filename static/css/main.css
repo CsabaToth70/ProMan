@@ -8,8 +8,10 @@
 }
 
 body{
-    min-width: 620px;
-    background: #ddd url(http://cdn.backgroundhost.com/backgrounds/subtlepatterns/diagonal-noise.png);
+    background-image: url("/static/img/project.jpg");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: 100%;
     font-family: sans-serif;
 }
 
