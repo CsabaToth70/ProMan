@@ -202,6 +202,7 @@ export let dom = {
         let inputField = dom.getColumnTitleForm(event)
         clickedTitle.parentNode.replaceChild(inputField, clickedTitle);
         inputField.addEventListener('keypress', dom.handleEnter);
+        inputField.addEventListener('keydown', dom.handleEscape);
     },
     getColumnTitleForm: function (event) {
         let clickedTitle = event.currentTarget;
@@ -227,12 +228,19 @@ export let dom = {
         dataHandler.renameColumn(changedColumn);
     },
     handleEscape: function (event) {
-        if (event.key === 'Esc') {
-            dom.closeColumnInput();
+        if (event.key === 'Escape') {
+            dom.closeColumnInput(event);
         }
     },
-    closeColumnInput: function () {
-        console.log('escape')
+    closeColumnInput: function (event) {
+        dom.getOriginalColumnTitle(event);
     },
-
+    getOriginalColumnTitle: function (event) {
+        let inputForm = event.currentTarget;
+        let originalTitle = event.target.defaultValue;
+        let columnTitle = document.createElement('div');
+        columnTitle.setAttribute('class', 'board-column-title');
+        columnTitle.textContent = originalTitle;
+        inputForm.parentNode.replaceChild(columnTitle, inputForm);
+    },
 }
