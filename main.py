@@ -32,8 +32,7 @@ def get_statuses():
 @json_response
 def rename_board():
     changed_data = request.json
-    data_handler.rename_board(changed_data)
-    return ""
+    return data_handler.rename_board(changed_data)
 
 
 @app.route("/rename-column", methods=['POST'])
@@ -45,7 +44,8 @@ def rename_column():
 @app.route("/add-status", methods=['POST'])
 def add_status():
     new_status = request.json
-    return data_handler.add_new_status(new_status)
+    data_handler.add_new_status(new_status)
+    return ''
 
 
 @app.route("/get-cards/<int:board_id>", methods=['GET', 'POST'])

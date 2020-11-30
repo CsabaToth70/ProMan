@@ -16,11 +16,12 @@ export let dom = {
         }
         dom.listenForBoardTitleClick();
         dom.listenForToggleClick();
-        dom.loadStatuses();
+        // dom.loadStatuses();
     },
-    loadStatuses: function () {
+    loadStatuses: function (event) {
+        let board = event.currentTarget.closest('.board');
         dataHandler.getStatuses(function (statuses) {
-            dom.showColumns(statuses);
+            dom.showColumns(statuses, board);
         });
     },
     loadCards: function (boardId) {
@@ -56,11 +57,11 @@ export let dom = {
         }
     },
     clearCards: function () {
-        let columnContents = document.querySelectorAll(".board-column-content");
-        for (let columnContent of columnContents) {
+        let boardColumns = document.querySelectorAll('.board-columns');
+        for (let boardColumn of boardColumns) {
             let emptyContent = document.createElement('div');
-            emptyContent.setAttribute('class', 'board-column-content');
-            columnContent.parentNode.replaceChild(emptyContent, columnContent);
+            emptyContent.setAttribute('class', 'board-columns');
+            boardColumn.parentNode.replaceChild(emptyContent, boardColumn);
         }
     },
 
@@ -149,16 +150,14 @@ export let dom = {
 
     // ***** Board view with 4 default columns *****
 
-    createColumns: function (status) {
-        let boards = document.querySelectorAll('.board-columns');
-        for (let board of boards) {
-            dom.setBoardVisibility(board, 'none');
-            board.insertAdjacentHTML('afterbegin', `
+    createColumns: function (status, board) {
+        let boardBody = board.querySelector('.board-columns');
+        boardBody.insertAdjacentHTML('afterbegin', `
                 <div class="board-column">
                     <div class="board-column-title">${status.title}</div>
                     <div class="board-column-content"></div>
                 </div>`)
-        }
+        dom.listenForColumnTitleClick();
     },
     listenForToggleClick: function () {
         let toggles = document.querySelectorAll(".board-toggle");
@@ -167,19 +166,18 @@ export let dom = {
         }
     },
     showSelectedBoard: function (event) {
+        let boardId = event.currentTarget.parentElement.dataset['boardId'];
         let currentBoardContainer = dom.getCurrentBoardContainer(event);
         let currentBoard = currentBoardContainer.querySelector('.board-columns');
         let currentBoardTitle = currentBoardContainer.querySelector('.board-title');
         let clickedToggle = currentBoardContainer.querySelector('.board-toggle');
 
+        dom.loadStatuses(event);
         dom.setBoardVisibility(currentBoard, 'flex');
         dom.showNewColumnButton(event);
-        clickedToggle.removeEventListener("click", dom.createColumns);
         currentBoardTitle.removeEventListener("click", dom.changeBoardName);
         currentBoardTitle.addEventListener('click', dom.closeBoard);
-        dom.listenForColumnTitleClick();
 
-        let boardId = event.currentTarget.parentElement.dataset['boardId'];
         dom.loadCards(boardId);
         clickedToggle.removeEventListener("click", dom.showSelectedBoard);
     },
@@ -201,7 +199,7 @@ export let dom = {
     },
 
     // ***** Board view with dynamic columns *****
-
+    // FIXME: board should be reloaded and input hidden
     hideNewColumnButtons: function () {
         let newColumnButtons = document.querySelectorAll('.board-add-column');
         for (let newColumnButton of newColumnButtons) {
@@ -218,12 +216,12 @@ export let dom = {
         let currentBoardContainer = dom.getCurrentBoardContainer(event);
         let statusInput = currentBoardContainer.querySelector('.new-status-title');
         statusInput.style.display = 'inline-block';
-        let saveButton = document.querySelector('.new-status-title button');
+        let saveButton = event.currentTarget.parentElement.querySelector('.new-status-title button');
         saveButton.addEventListener('click', dom.getNewStatus);
     },
-    showColumns: function (statuses) {
+    showColumns: function (statuses, board) {
         for (let status of statuses) {
-            dom.createColumns(status)
+            dom.createColumns(status, board)
         }
     },
     getNewStatus: function (event) {
