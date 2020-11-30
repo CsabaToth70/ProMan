@@ -16,7 +16,6 @@ export let dom = {
         }
         dom.listenForBoardTitleClick();
         dom.listenForToggleClick();
-        // dom.loadStatuses();
     },
     loadStatuses: function (event) {
         let board = event.currentTarget.closest('.board');
@@ -82,6 +81,12 @@ export let dom = {
         const outerHtml = `<section class="board">${boardHeader}${boardColumns}</section>`;
         let boardContainer = document.querySelector('.board-container');
         boardContainer.insertAdjacentHTML("beforeend", outerHtml);
+    },
+    clearBoards: function () {
+        let boardContainer = document.querySelector('.board-container');
+        let emptyBoardContainer = document.createElement('div');
+        emptyBoardContainer.setAttribute('class', 'board-container');
+        boardContainer.parentNode.replaceChild(emptyBoardContainer, boardContainer);
     },
 
     // ***** Create public boards *****
@@ -199,7 +204,6 @@ export let dom = {
     },
 
     // ***** Board view with dynamic columns *****
-    // FIXME: board should be reloaded and input hidden
     hideNewColumnButtons: function () {
         let newColumnButtons = document.querySelectorAll('.board-add-column');
         for (let newColumnButton of newColumnButtons) {
@@ -229,6 +233,8 @@ export let dom = {
         let inputField = button.parentElement.querySelector('input');
         let newStatus = inputField.value;
         dataHandler.addStatus(newStatus);
+        dom.clearBoards();
+        dom.loadBoards();
     },
 
     // ***** Rename columns *****

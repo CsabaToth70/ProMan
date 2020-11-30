@@ -42,6 +42,7 @@ def rename_column():
 
 
 @app.route("/add-status", methods=['POST'])
+@json_response
 def add_status():
     new_status = request.json
     data_handler.add_new_status(new_status)
