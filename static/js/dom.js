@@ -70,9 +70,13 @@ export let dom = {
         let boardTitle = `<span class="board-title">${board.title}</span>`;
         let headerButtons = `
             <button class="board-add-card">Create new card</button>
+             <div class="new-card-title">
+                <input class="new-card-input" type="text" name="card" required>
+                <button type="submit">Save</button>
+             </div>
             <button class="board-add-column">Add new column</button>
             <div class="new-status-title">
-                <input type="text" name="status" required>
+                <input class="new-status-input" type="text" name="status" required>
                 <button type="submit">Save</button>
             </div>
             <button class="board-toggle"><i class="fas fa-chevron-down"></i></button>`;
@@ -180,6 +184,7 @@ export let dom = {
         dom.loadStatuses(event);
         dom.setBoardVisibility(currentBoard, 'flex');
         dom.showNewColumnButton(event);
+        dom.showNewCardButton(event);
         currentBoardTitle.removeEventListener("click", dom.changeBoardName);
         currentBoardTitle.addEventListener('click', dom.closeBoard);
 
@@ -216,6 +221,7 @@ export let dom = {
         newColumnButton.style.display = 'inline-block';
         newColumnButton.addEventListener('click', dom.showStatusInput)
     },
+
     showStatusInput: function (event) {
         let currentBoardContainer = dom.getCurrentBoardContainer(event);
         let statusInput = currentBoardContainer.querySelector('.new-status-title');
@@ -230,7 +236,7 @@ export let dom = {
     },
     getNewStatus: function (event) {
         let button = event.currentTarget;
-        let inputField = button.parentElement.querySelector('input');
+        let inputField = button.parentElement.querySelector('.new-status-input');
         let newStatus = inputField.value;
         dataHandler.addStatus(newStatus);
         dom.clearBoards();
@@ -292,4 +298,29 @@ export let dom = {
         columnTitle.textContent = originalTitle;
         inputForm.parentNode.replaceChild(columnTitle, inputForm);
     },
+
+    //*******Add new card***************
+    showNewCardButton: function (event) {
+      let currentBoardContainer = dom.getCurrentBoardContainer(event);
+      let newCardButton = currentBoardContainer.querySelector('.board-add-card');
+        newCardButton.style.display = 'inline-block';
+        newCardButton.addEventListener('click', dom.showCardInput)
+    },
+    showCardInput: function(event){
+        let currentBoardContainer = dom.getCurrentBoardContainer(event);
+        let cardInput = currentBoardContainer.querySelector('.new-card-title');
+        cardInput.style.display = 'inline-block';
+        let saveButton = event.currentTarget.parentElement.querySelector('.new-card-title button');
+        saveButton.addEventListener('click', dom.getNewCard);
+    },
+    getNewCard: function(event){
+        let button = event.currentTarget;
+        let inputField = button.parentElement.querySelector('.new-card-input');
+        let newCard = inputField.value;
+        let statusId = 0;
+        let boardId = event.currentTarget.closest(".board-header").dataset.boardId;
+        dataHandler.createNewCard(newCard, boardId, statusId);
+        dom.clearBoards();
+        dom.loadBoards();
+    }
 }

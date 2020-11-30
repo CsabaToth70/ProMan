@@ -76,7 +76,7 @@ section.board{
     display: inline-block;
 }
 
-.board-add-column, .new-status-title, .board-add-card {
+.board-add-column, .new-status-title, .board-add-card, .new-card-title{
     display: none;
 }
 

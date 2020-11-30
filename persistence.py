@@ -1,10 +1,10 @@
 from psycopg2.extras import RealDictCursor
-from psycopg2 import sql
 
 import connection
 
 _cache = {}  # We store cached data in this dict to avoid multiple file readings
-CARDS_FILE =''
+CARDS_FILE = ''
+
 
 @connection.connection_handler
 def _get_boards(cursor: RealDictCursor):
@@ -75,6 +75,17 @@ def _get_cards(cursor: RealDictCursor):
     return cursor.fetchall()
 
 
+@connection.connection_handler
+def _add_new_card(cursor: RealDictCursor, new_card):
+    query = """
+        INSERT INTO cards (board_id, title, status_id, "order") VALUES
+        (%(board_id)s, %(title)s, %(status_id)s, NEXTVAL('cards_order_seq'));
+        
+    """
+    cursor.execute(query,
+                   {'board_id': new_card['board_id'], 'title': new_card['title'], 'status_id': new_card['status_id']})
+
+
 def create_new_public_board(board_title):
     _add_new_board(board_title)
 
@@ -89,6 +100,10 @@ def rename_column_title(changed_data):
 
 def create_new_status(status):
     _add_new_status(status)
+
+
+def create_new_card(new_card):
+    _add_new_card(new_card)
 
 
 def _get_data(data_type, table_function, force):

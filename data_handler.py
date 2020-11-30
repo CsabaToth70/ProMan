@@ -21,6 +21,10 @@ def add_new_status(status):
     persistence.create_new_status(status)
 
 
+def add_new_card(new_card):
+    persistence.create_new_card(new_card)
+
+
 def get_card_status(status_id):
     """
     Find the first status matching the given id
