@@ -278,3 +278,4 @@ export let dom = {
         inputForm.parentNode.replaceChild(columnTitle, inputForm);
     },
 }
+
