@@ -32,6 +32,7 @@ export let dom = {
         for (let card of cards) {
             dom.createCardElements(card, boardId)
         }
+        dom.listenforCardDrag();
     },
 
     //****** Cards' list overview *********
@@ -55,6 +56,7 @@ export let dom = {
             }
         }
         dom.listenForCardTitleClick();
+
     },
     clearCards: function () {
         let boardColumns = document.querySelectorAll('.board-columns');
@@ -181,7 +183,6 @@ export let dom = {
         let currentBoard = currentBoardContainer.querySelector('.board-columns');
         let currentBoardTitle = currentBoardContainer.querySelector('.board-title');
         let clickedToggle = currentBoardContainer.querySelector('.board-toggle');
-
         dom.loadStatuses(event);
         dom.setBoardVisibility(currentBoard, 'flex');
         dom.showNewColumnButton(event);
@@ -369,7 +370,7 @@ export let dom = {
     },
     getChangedCardTitle: function (event) {
         let cardId = event.currentTarget.closest('.card').dataset.cardId;
-        console.log(cardId)
+        //console.log(cardId)
         let changedCard = {'card_id': cardId, 'new_title': event.target.value};
         dataHandler.renameCard(changedCard);
         dom.clearBoards();
@@ -392,4 +393,28 @@ export let dom = {
         columnTitle.textContent = originalTitle;
         inputDiv.parentNode.replaceChild(columnTitle, inputDiv);
     },
+
+    listenforCardDrag: function (){
+      let cards = document.querySelectorAll(".card");
+        for (let card of cards){
+            card.addEventListener("dragstart", this.dragStartHandler);
+            card.addEventListener("drag",this.dragHandler);
+            card.addEventListener("dragend", this.dragEndHandler);
+            card.setAttribute("draggable", "true");
+        }
+
+    },
+
+
+       dragStartHandler: function (event){
+        let statusName = event.parentElement;
+           //console.log(statusName);
+
+       },
+       dragHandler: function (event){
+
+       },
+       dragEndHandler: function (event){
+
+       }
 }
