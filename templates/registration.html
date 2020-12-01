@@ -16,24 +16,26 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/solid.css" integrity="sha384-rdyFrfAIC05c5ph7BKz3l5NG5yEottvO/DQ0dCrwD8gzeQDjYBHNr1ucUpQuljos" crossorigin="anonymous">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/fontawesome.css" integrity="sha384-u5J7JghGz0qUrmEsWzBQkfvc8nK3fUT7DCaQzNQ+q4oEXhGSx+P2OqjWsfIRB8QT" crossorigin="anonymous">
-
-
-
-        <script type="module" src="{{ url_for('static', filename='js/main.js') }}" defer></script>
     </head>
     <body>
-    <h1>ProMan</h1>
-    <button class="new-board">Create new board</button>
-    <form method="post" class="new-board-title">
-        <input type="text" name="title" required>
-        <button type="submit">Save</button>
-    </form>
-    <section class="login">
-        <a href="/registration">Register</a>
-        <a href="/login">| Login</a>
-        <a href="/logout">Logout</a>
+
+    <section class="registration-form">
+        <h1>Registration</h1>
+        <form method="post">
+            <div>
+                <label for="email" id="email">Email:</label><br>
+                <input type="email" name="email" id="email" required>
+            </div>
+            <div>
+                <label for="password" id="password">Password:</label><br>
+                <input type="password" name="password" id="password" required>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+        {% if error %}
+            <p>Username already exists, please choose another one!</p>
+        {% endif %}
     </section>
-    <div class="board-container"></div>
 
     </body>
 </html>

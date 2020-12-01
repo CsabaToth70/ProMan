@@ -1,4 +1,6 @@
-from flask import Flask, render_template, url_for, request, redirect
+from flask import Flask, render_template, url_for, request, redirect, session
+import werkzeug
+from werkzeug import security
 
 import data_handler
 from util import json_response
@@ -75,6 +77,23 @@ def update_card_status():
     column_details = request.json
     data_handler.update_card_status(column_details)
     return ''
+
+
+@app.route('/registration', methods=['GET', 'POST'])
+def register():
+    if 'email' not in session:
+        error = None
+        if request.method == 'POST':
+            new_email = request.form['email']
+            new_password = request.form['password']
+            if data_handler.is_email_taken(new_email):
+                error = True
+            else:
+                hashed_password = werkzeug.security.generate_password_hash(new_password)
+                data_handler.add_new_user_data(new_email, hashed_password)
+                return redirect('/login')
+        return render_template('registration.html', error=error)
+    return redirect('/')
 
 
 def main():

@@ -15,6 +15,35 @@ body{
     font-family: sans-serif;
 }
 
+.login {
+    display: inline-block;
+    position: absolute;
+    right: 5%;
+}
+
+.login a {
+    color: white;
+    text-decoration: none;
+}
+
+.registration-form {
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    text-align: center;
+}
+
+#email, #password, .registration-form h1 {
+    margin-bottom: 25px;
+}
+
+.registration-form p {
+    color: darkred;
+    font-weight: bold;
+}
+
 h1, .board-title, .board-column-title{
     font-weight: 100;
 }
@@ -26,7 +55,7 @@ h1{
     transform: scale(1.2, 1);
 }
 
-button{
+button, .login {
     background: #222;
     color: #fff;
     border: none;

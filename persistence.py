@@ -108,6 +108,26 @@ def _update_card_status(cursor: RealDictCursor, card_details: dict):
                            'order': card_details['order']})
 
 
+@connection.connection_handler
+def _is_email_taken(cursor: RealDictCursor, new_email: str):
+    query = """
+        SELECT * FROM users
+        WHERE email = %(new_email)s;
+        """
+    cursor.execute(query, {'new_email': new_email})
+    return cursor.fetchall() != []
+
+
+@connection.connection_handler
+def _add_new_user(cursor: RealDictCursor, new_email, hashed_password):
+    query = """
+        INSERT INTO users (email, password) VALUES
+        (%(email)s, %(password)s);
+
+    """
+    cursor.execute(query, {'email': new_email, 'password': hashed_password})
+
+
 def create_new_public_board(board_title):
     _add_new_board(board_title)
 
@@ -135,6 +155,14 @@ def create_new_card(new_card):
 def change_card_status(column_details):
     for card_details in column_details:
         _update_card_status(card_details)
+
+
+def check_email_availability(new_email):
+    return _is_email_taken(new_email)
+
+
+def create_new_account(new_email, hashed_password):
+    _add_new_user(new_email, hashed_password)
 
 
 def _get_data(data_type, table_function, force):

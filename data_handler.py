@@ -33,6 +33,14 @@ def update_card_status(column_details):
     persistence.change_card_status(column_details)
 
 
+def is_email_taken(new_email):
+    return persistence.check_email_availability(new_email)
+
+
+def add_new_user_data(new_email, hashed_password):
+    persistence.create_new_account(new_email, hashed_password)
+
+
 def get_card_status(status_id):
     """
     Find the first status matching the given id
