@@ -203,6 +203,7 @@ export let dom = {
         let toBeClosedBoard = currentBoardContainer.querySelector('.board-columns');
         dom.setBoardVisibility(toBeClosedBoard, 'none');
         dom.hideNewColumnButtons();
+        dom.hideNewCardButtons();
         dom.listenForToggleClick();
         dom.listenForBoardTitleClick();
         dom.clearCards();
@@ -322,5 +323,11 @@ export let dom = {
         dataHandler.createNewCard(newCard, boardId, statusId);
         dom.clearBoards();
         dom.loadBoards();
-    }
+    },
+    hideNewCardButtons: function () {
+        let newCardButtons = document.querySelectorAll('.board-add-card');
+        for (let newCardButton of newCardButtons) {
+            newCardButton.style.display = 'none';
+        }
+    },
 }
