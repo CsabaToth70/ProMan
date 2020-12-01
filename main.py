@@ -77,6 +77,10 @@ def update_card_status():
     return ''
 
 
+@app.route('/login')
+def login():
+    pass
+
 def main():
     app.run(debug=True)
 
