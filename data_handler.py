@@ -29,8 +29,8 @@ def add_new_card(new_card):
     persistence.create_new_card(new_card)
 
 
-def update_card_status(new_status):
-    persistence.change_card_status(new_status)
+def update_card_status(column_details):
+    persistence.change_card_status(column_details)
 
 
 def get_card_status(status_id):

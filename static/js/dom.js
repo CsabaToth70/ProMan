@@ -442,10 +442,15 @@ export let dom = {
     columnDropStatus: function(event) {
         event.preventDefault();
         let draggedCard = document.querySelector('.dragged');
-        let cardId = draggedCard.dataset.cardId;
         let statusId = event.currentTarget.closest('.board-column').dataset.statusId;
+        let boardColumn = event.currentTarget.closest('.board-column');
         event.currentTarget.appendChild(draggedCard);
-        let changedStatus = {'card_id': cardId, 'status_id': statusId}
-        dataHandler.changeCardStatus(changedStatus);
+        let cards = boardColumn.querySelectorAll('.card');
+        let columnDetails = [];
+        for (let [i, card] of cards.entries()) {
+            card.setAttribute('data-order', i.toString())
+            columnDetails.push({'order': i, 'card_id': card.dataset.cardId, 'status_id': statusId});
+        }
+        dataHandler.changeDragAndDropStatus(columnDetails);
     },
 }

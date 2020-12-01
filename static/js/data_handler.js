@@ -72,7 +72,7 @@ export let dataHandler = {
     renameCard: function (changedCardData) {
         this._api_post('/rename-card', changedCardData);
     },
-    changeCardStatus: function (changedCardData) {
-        this._api_post('/update-card-status', changedCardData);
+    changeDragAndDropStatus: function (columnDetails) {
+        this._api_post('/update-card-status', columnDetails);
     }
 };

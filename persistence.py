@@ -79,7 +79,8 @@ def _get_statuses(cursor: RealDictCursor):
 @connection.connection_handler
 def _get_cards(cursor: RealDictCursor):
     query = """
-        SELECT * FROM cards;
+        SELECT * FROM cards
+        ORDER BY "order" DESC;
         """
     cursor.execute(query)
     return cursor.fetchall()
@@ -97,13 +98,14 @@ def _add_new_card(cursor: RealDictCursor, new_card):
 
 
 @connection.connection_handler
-def _update_card_status(cursor: RealDictCursor, new_status):
+def _update_card_status(cursor: RealDictCursor, card_details: dict):
     query = """
         UPDATE cards
-        SET status_id = %(status_id)s
+        SET status_id = %(status_id)s, "order" = %(order)s
         WHERE id = %(card_id)s;
         """
-    cursor.execute(query, {'card_id': new_status['card_id'], 'status_id': new_status['status_id']})
+    cursor.execute(query, {'card_id': card_details['card_id'], 'status_id': card_details['status_id'],
+                           'order': card_details['order']})
 
 
 def create_new_public_board(board_title):
@@ -130,8 +132,9 @@ def create_new_card(new_card):
     _add_new_card(new_card)
 
 
-def change_card_status(new_status):
-    _update_card_status(new_status)
+def change_card_status(column_details):
+    for card_details in column_details:
+        _update_card_status(card_details)
 
 
 def _get_data(data_type, table_function, force):
