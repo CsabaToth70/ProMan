@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, redirect, session
+from flask import Flask, render_template, url_for, request, redirect, session, escape
 import werkzeug
 from werkzeug import security
 
@@ -7,6 +7,7 @@ from util import json_response
 
 app = Flask(__name__)
 
+app.secret_key = '\xd4S\xb5\xac5\x98+\x0b*>\xb2\x8bQL)\x97'
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
@@ -96,9 +97,19 @@ def register():
     return redirect('/')
 
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    pass
+    if request.method == 'POST':
+        email = request.form['email']
+        plain_text_password = request.form['password']
+        hashed_password = data_handler.get_hashed_pw(email)
+        if werkzeug.security.check_password_hash(hashed_password, plain_text_password):
+            session['email'] = request.form['email']
+            return render_template('index.html', email=escape(session['email']))
+        else:
+            return render_template('login.html', logged_in=False, error=True)
+    return render_template('login.html', logged_in=False, error=None)
+
 
 def main():
     app.run(debug=True)

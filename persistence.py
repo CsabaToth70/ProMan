@@ -119,6 +119,20 @@ def _is_email_taken(cursor: RealDictCursor, new_email: str):
 
 
 @connection.connection_handler
+def get_hashed_password(cursor: RealDictCursor, email: str):
+    query = """
+        SELECT password FROM users
+        WHERE email = %(email)s;
+        """
+    cursor.execute(query, {'email': email})
+    try:
+        result = cursor.fetchone()['password']
+        return result
+    except TypeError:
+        return ""
+
+
+@connection.connection_handler
 def _add_new_user(cursor: RealDictCursor, new_email, hashed_password):
     query = """
         INSERT INTO users (email, password) VALUES

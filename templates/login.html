@@ -18,7 +18,6 @@
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/fontawesome.css" integrity="sha384-u5J7JghGz0qUrmEsWzBQkfvc8nK3fUT7DCaQzNQ+q4oEXhGSx+P2OqjWsfIRB8QT" crossorigin="anonymous">
 
 
-
         <script type="module" src="{{ url_for('static', filename='js/main.js') }}" defer></script>
     </head>
 <body>
@@ -29,23 +28,19 @@
         <p class="login">Login</p>
         <form method="post">
             <p>
-                <label for="username" id="username">Email:</label>
-                <input type="text" name="username" id="username">
+                <label for="email" id="email">Email:</label>
+                <input type="text" name="email" id="email" required>
             </p>
             <p>
                 <label for="password" id="password">Password:</label>
-                <input type="password" name="password" id="password">
+                <input type="password" name="password" id="password" required>
             </p>
             <span class="login"><button type="submit">Submit</button></span>
         </form>
-    {% if error %}
-        <p>Wrong email or password!</p>
-    {% endif %}
-    {% if incomplete %}
-        <p>Please, fill in both fields.</p>
-    {% endif %}
+        {% if error %}
+            <p>Wrong email or password!</p>
+        {% endif %}
     </section>
-
 
 </body>
 </html>

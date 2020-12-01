@@ -37,6 +37,12 @@ def is_email_taken(new_email):
     return persistence.check_email_availability(new_email)
 
 
+def get_hashed_pw(email):
+    a = persistence.get_hashed_password(email)
+    print(a)
+    return persistence.get_hashed_password(email)
+
+
 def add_new_user_data(new_email, hashed_password):
     persistence.create_new_account(new_email, hashed_password)
 
@@ -68,3 +74,5 @@ def get_cards_for_board(board_id):
             card['status_id'] = get_card_status(card['status_id'])  # Set textual status for the card
             matching_cards.append(card)
     return matching_cards
+
+
