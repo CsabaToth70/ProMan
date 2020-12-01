@@ -111,6 +111,12 @@ def login():
     return render_template('login.html', logged_in=False, error=None)
 
 
+@app.route('/logout')
+def logout():
+    session.pop('email', None)
+    return redirect('/')
+
+
 def main():
     app.run(debug=True)
 
