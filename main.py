@@ -41,6 +41,12 @@ def rename_column():
     return data_handler.rename_column(changed_data)
 
 
+@app.route("/rename-card", methods=['POST'])
+def rename_card():
+    changed_data = request.json
+    return data_handler.rename_card(changed_data)
+
+
 @app.route("/add-status", methods=['POST'])
 @json_response
 def add_status():

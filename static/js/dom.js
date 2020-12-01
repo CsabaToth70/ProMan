@@ -46,7 +46,7 @@ export let dom = {
                     if (statusTitle.textContent === card['status_id']) {
                         let currentColumnContent = statusTitle.parentElement.querySelector(".board-column-content");
                         currentColumnContent.insertAdjacentHTML('afterbegin',
-                            `<div class="card">
+                            `<div class="card" data-card-id="${card.id}">
                                        <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
                                        <div class="card-title">${card.title}</div>
                                 </div>`)
@@ -54,6 +54,7 @@ export let dom = {
                 }
             }
         }
+        dom.listenForCardTitleClick();
     },
     clearCards: function () {
         let boardColumns = document.querySelectorAll('.board-columns');
@@ -329,5 +330,66 @@ export let dom = {
         for (let newCardButton of newCardButtons) {
             newCardButton.style.display = 'none';
         }
+    },
+
+    // ***** Rename cards *****
+
+    listenForCardTitleClick: function () {
+        let cardNames = document.querySelectorAll('.card-title');
+        for (let cardName of cardNames) {
+            cardName.addEventListener('click', dom.changeCardName);
+        }
+    },
+    changeCardName: function (event) {
+        let clickedTitle = event.currentTarget;
+        let inputField = dom.getCardTitleDiv(event)
+        clickedTitle.parentNode.replaceChild(inputField, clickedTitle);
+        inputField.addEventListener('keypress', dom.handleCardEnter);
+        inputField.addEventListener('keydown', dom.handleCardEscape);
+    },
+    getCardTitleDiv: function (event) {
+        let clickedTitle = event.currentTarget;
+
+        let newCardDiv = document.createElement('div');
+        newCardDiv.classList.add('rename-card');
+        newCardDiv.style.display = 'block';
+
+        let newCardInput = document.createElement('input');
+        newCardInput.classList.add('rename-card-input');
+        newCardInput.setAttribute('name', 'changed-card-title');
+        newCardInput.setAttribute("value", `${clickedTitle.textContent}`);
+
+        newCardDiv.appendChild(newCardInput);
+        return newCardDiv;
+    },
+    handleCardEnter: function (event) {
+        if (event.key === 'Enter') {
+            dom.getChangedCardTitle(event);
+        }
+    },
+    getChangedCardTitle: function (event) {
+        let cardId = event.currentTarget.closest('.card').dataset.cardId;
+        console.log(cardId)
+        let changedCard = {'card_id': cardId, 'new_title': event.target.value};
+        dataHandler.renameCard(changedCard);
+        dom.clearBoards();
+        dom.loadBoards();
+    },
+    handleCardEscape: function (event) {
+        if (event.key === 'Escape') {
+            dom.closeCardInput(event);
+        }
+    },
+    closeCardInput: function (event) {
+        dom.getOriginalCardTitle(event);
+        dom.listenForCardTitleClick();
+    },
+    getOriginalCardTitle: function (event) {
+        let inputDiv = event.currentTarget;
+        let originalTitle = event.target.defaultValue;
+        let columnTitle = document.createElement('div');
+        columnTitle.setAttribute('class', 'card-title');
+        columnTitle.textContent = originalTitle;
+        inputDiv.parentNode.replaceChild(columnTitle, inputDiv);
     },
 }

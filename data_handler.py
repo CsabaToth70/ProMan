@@ -13,6 +13,10 @@ def rename_column(changed_data):
     persistence.rename_column_title(changed_data)
 
 
+def rename_card(changed_data):
+    persistence.rename_card_title(changed_data)
+
+
 def get_all_statuses():
     return persistence.get_statuses(force=True)
 

@@ -47,6 +47,16 @@ def _update_column_name(cursor: RealDictCursor, changed_data: dict):
 
 
 @connection.connection_handler
+def _update_card_name(cursor: RealDictCursor, changed_data: dict):
+    query = """
+            UPDATE cards
+            SET title = %(new_title)s
+            WHERE id = %(card_id)s;
+            """
+    cursor.execute(query, {'new_title': changed_data['new_title'], 'card_id': changed_data['card_id']})
+
+
+@connection.connection_handler
 def _add_new_status(cursor: RealDictCursor, status):
     query = """
         INSERT INTO statuses
@@ -96,6 +106,10 @@ def rename_board_title(changed_data):
 
 def rename_column_title(changed_data):
     _update_column_name(changed_data)
+
+
+def rename_card_title(changed_data):
+    _update_card_name(changed_data)
 
 
 def create_new_status(status):

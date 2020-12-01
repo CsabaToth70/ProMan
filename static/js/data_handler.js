@@ -69,4 +69,7 @@ export let dataHandler = {
     renameColumn: function (changedColumnData) {
         this._api_post('/rename-column', changedColumnData);
     },
+    renameCard: function (changedCardData) {
+        this._api_post('/rename-card', changedCardData);
+    },
 };
