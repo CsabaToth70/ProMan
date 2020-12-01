@@ -55,6 +55,7 @@ export let dom = {
             }
         }
         dom.listenForCardTitleClick();
+        dom.initDragAndDropStatus();
     },
     clearCards: function () {
         let boardColumns = document.querySelectorAll('.board-columns');
@@ -163,7 +164,7 @@ export let dom = {
     createColumns: function (status, board) {
         let boardBody = board.querySelector('.board-columns');
         boardBody.insertAdjacentHTML('afterbegin', `
-                <div class="board-column">
+                <div class="board-column" data-status-id="${status.id}">
                     <div class="board-column-title">${status.title}</div>
                     <div class="board-column-content"></div>
                 </div>`)
@@ -391,5 +392,60 @@ export let dom = {
         columnTitle.setAttribute('class', 'card-title');
         columnTitle.textContent = originalTitle;
         inputDiv.parentNode.replaceChild(columnTitle, inputDiv);
+    },
+
+    // ***** Change card status *****
+
+    initDragAndDropStatus: function () {
+        let cards = document.querySelectorAll('.card');
+        let columns = document.querySelectorAll('.board-column-content');
+        dom.initStatusDraggables(cards);
+        dom.initStatusDropZones(columns);
+   },
+    initStatusDraggables: function (cards) {
+        for (const card of cards) {
+            dom.initStatusDraggable(card);
+        }
+    },
+    initStatusDropZones: function (columns) {
+        for (let column of columns) {
+            dom.initStatusDropZone(column);
+        }
+    },
+    initStatusDraggable: function (card) {
+        card.addEventListener("dragstart", dom.dragStartStatus);
+        card.addEventListener("dragend", dom.dragEndStatus);
+        card.setAttribute("draggable", "true");
+    },
+    initStatusDropZone: function (column) {
+        column.addEventListener("dragenter", dom.columnEnterStatus);
+        column.addEventListener("dragover", dom.columnOverStatus);
+        column.addEventListener("dragleave", dom.columnLeaveStatus);
+        column.addEventListener("drop", dom.columnDropStatus);
+    },
+    dragStartStatus: function(event) {
+        event.currentTarget.classList.add('dragged');
+    },
+    dragEndStatus: function () {
+        this.classList.remove('dragged');
+    },
+    columnEnterStatus: function (event) {
+        event.currentTarget.classList.add("over-zone");
+        event.preventDefault();
+    },
+    columnOverStatus: function(event) {
+        event.preventDefault();
+    },
+    columnLeaveStatus: function (event) {
+        event.currentTarget.classList.remove('over-zone');
+    },
+    columnDropStatus: function(event) {
+        event.preventDefault();
+        let draggedCard = document.querySelector('.dragged');
+        let cardId = draggedCard.dataset.cardId;
+        let statusId = event.currentTarget.closest('.board-column').dataset.statusId;
+        event.currentTarget.appendChild(draggedCard);
+        let changedStatus = {'card_id': cardId, 'status_id': statusId}
+        dataHandler.changeCardStatus(changedStatus);
     },
 }

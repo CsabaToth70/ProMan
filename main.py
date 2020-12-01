@@ -69,6 +69,14 @@ def add_card():
     return ''
 
 
+@app.route("/update-card-status", methods=['POST'])
+@json_response
+def update_card_status():
+    new_status = request.json
+    data_handler.update_card_status(new_status)
+    return ''
+
+
 def main():
     app.run(debug=True)
 

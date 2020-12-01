@@ -96,6 +96,16 @@ def _add_new_card(cursor: RealDictCursor, new_card):
                    {'board_id': new_card['board_id'], 'title': new_card['title'], 'status_id': new_card['status_id']})
 
 
+@connection.connection_handler
+def _update_card_status(cursor: RealDictCursor, new_status):
+    query = """
+        UPDATE cards
+        SET status_id = %(status_id)s
+        WHERE id = %(card_id)s;
+        """
+    cursor.execute(query, {'card_id': new_status['card_id'], 'status_id': new_status['status_id']})
+
+
 def create_new_public_board(board_title):
     _add_new_board(board_title)
 
@@ -118,6 +128,10 @@ def create_new_status(status):
 
 def create_new_card(new_card):
     _add_new_card(new_card)
+
+
+def change_card_status(new_status):
+    _update_card_status(new_status)
 
 
 def _get_data(data_type, table_function, force):
