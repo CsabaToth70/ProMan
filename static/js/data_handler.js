@@ -30,6 +30,14 @@ export let dataHandler = {
             callback(response);
         });
     },
+
+    getPrivateBoards: function (email, callback) {
+        this._api_get(`/get-private-boards/${email}`, (response) => {
+            this._data['private_boards'] = response;
+            callback(response);
+        }, email);
+    },
+
     getBoard: function (boardId, callback) {
         // the board is retrieved and then the callback function is called with the board
     },

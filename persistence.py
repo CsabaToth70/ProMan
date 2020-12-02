@@ -10,9 +10,21 @@ CARDS_FILE = ''
 def _get_boards(cursor: RealDictCursor):
     query = """
         SELECT * FROM boards
+        WHERE user_email IS NULL
         ORDER BY id;
         """
     cursor.execute(query)
+    return cursor.fetchall()
+
+
+@connection.connection_handler
+def _get_private_boards(cursor: RealDictCursor, email:str):
+    query = """
+      SELECT * FROM boards
+      WHERE user_email = %(email)s OR user_email IS NULL
+      ORDER BY id;
+      """
+    cursor.execute(query, {'email': email})
     return cursor.fetchall()
 
 
@@ -220,3 +232,7 @@ def get_cards(force=False):
 
 def add_new_private_board_to_sql(new_private_board_details):
     _add_new_private_board_to_sql(new_private_board_details)
+
+
+def get_private_board_by_user(email):
+    return _get_private_boards(email)

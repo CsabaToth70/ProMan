@@ -7,9 +7,17 @@ export let dom = {
         dom.showPrivateBoardButton()
     },
     loadBoards: function () {
-        dataHandler.getBoards(function (boards) {
-            dom.showBoards(boards);
-        });
+        let email = dom.getLoggedInEmail();
+        if (email !== null) {
+            dataHandler.getPrivateBoards(email, function (privateBoards) {
+                dom.showBoards(privateBoards);
+            });
+        } else {
+            dataHandler.getBoards(function (boards) {
+                dom.showBoards(boards);
+            });
+        }
+
     },
     showBoards: function (boards) {
         for (let board of boards) {

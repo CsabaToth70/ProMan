@@ -67,6 +67,12 @@ def get_cards_for_board(board_id):
     return data_handler.get_cards_for_board(board_id)
 
 
+@app.route('/get-private-boards/<email>', methods=['GET', 'POST'])
+@json_response
+def get_private_boards(email):
+    return data_handler.get_private_boards(email)
+
+
 @app.route("/add-card", methods=['POST'])
 @json_response
 def add_card():

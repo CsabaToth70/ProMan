@@ -77,3 +77,6 @@ def get_cards_for_board(board_id):
 def add_new_private_board(new_private_board_details):
     persistence.add_new_private_board_to_sql(new_private_board_details)
 
+
+def get_private_boards(email):
+    return persistence.get_private_board_by_user(email)
