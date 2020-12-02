@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS statuses;
 CREATE TABLE boards (
     id SERIAL PRIMARY KEY,
     title VARCHAR,
-    user_id INT
+    user_email TEXT
 );
 CREATE TABLE cards (
     id SERIAL PRIMARY KEY,

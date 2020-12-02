@@ -84,7 +84,7 @@ button, .login {
 }
 
 .private-board-title{
-    display: inline-block;
+    display: none;
     position: fixed;
     left: 3%;
     top: 40px;

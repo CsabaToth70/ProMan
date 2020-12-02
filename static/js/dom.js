@@ -464,19 +464,35 @@ export let dom = {
         return loginElement
     },
 
-    addPrivateBoard: function () {
 
-    },
-
-    showPrivateBoardButton() {
+    showPrivateBoardButton: function () {
         let email = dom.getLoggedInEmail();
         if (email !== null) {
             let button = document.querySelector(".new-private-board")
             button.style.display = 'inline-block';
-            button.addEventListener("click", dom.addPrivateBoard)
+            button.addEventListener("click", dom.addNewPrivateBoard)
 
         }
     },
+    addNewPrivateBoard: function () {
+        dom.showPrivateBoardInput()
+        let saveButton = document.querySelector(".private-board-title button");
+        saveButton.addEventListener("click", dom.saveNewPrivateBoard)
+    },
+
+    showPrivateBoardInput: function () {
+        document.querySelector(".private-board-title").style.display = "inline-block"
+    },
+    saveNewPrivateBoard: async function(event){
+        let newPrivateBoardTitle = event.currentTarget.closest(".private-board-title").querySelector("input").value
+        let userEmail = dom.getLoggedInEmail();
+        let newPrivateBoardDict = {'title': newPrivateBoardTitle, 'user_email':userEmail};
+        document.querySelector(".private-board-title").style.display = "none"
+        dataHandler.NewPrivateBoard(newPrivateBoardDict);
+        dom.clearBoards();
+        await dom.loadBoards();
+
+    }
 
 }
 

@@ -74,3 +74,6 @@ def get_cards_for_board(board_id):
     return matching_cards
 
 
+def add_new_private_board(new_private_board_details):
+    persistence.add_new_private_board_to_sql(new_private_board_details)
+

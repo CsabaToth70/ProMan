@@ -74,5 +74,8 @@ export let dataHandler = {
     },
     changeDragAndDropStatus: function (columnDetails) {
         this._api_post('/update-card-status', columnDetails);
+    },
+    NewPrivateBoard: function (newPrivateBoardDict){
+        this._api_post('/add-private-board', newPrivateBoardDict);
     }
 };

@@ -142,6 +142,15 @@ def _add_new_user(cursor: RealDictCursor, new_email, hashed_password):
     cursor.execute(query, {'email': new_email, 'password': hashed_password})
 
 
+@connection.connection_handler
+def _add_new_private_board_to_sql(cursor: RealDictCursor, input_dict):
+    query = """
+        INSERT INTO boards (title, user_email) VALUES
+        (%(title)s, %(email)s);
+    """
+    cursor.execute(query, {'email': input_dict['user_email'], 'title': input_dict['title']})
+
+
 def create_new_public_board(board_title):
     _add_new_board(board_title)
 
@@ -207,3 +216,7 @@ def get_boards(force=False):
 
 def get_cards(force=False):
     return _get_data('cards', _get_cards, force)
+
+
+def add_new_private_board_to_sql(new_private_board_details):
+    _add_new_private_board_to_sql(new_private_board_details)

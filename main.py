@@ -128,5 +128,14 @@ def main():
         app.add_url_rule('/favicon.ico', redirect_to=url_for('static', filename='favicon/favicon.ico'))
 
 
+@app.route('/add-private-board', methods=['POST'])
+@json_response
+def add_private_board():
+    new_private_board_details = request.json
+
+    data_handler.add_new_private_board(new_private_board_details)
+    return ''
+
+
 if __name__ == '__main__':
     main()
