@@ -22,20 +22,19 @@
     </head>
 <body>
 
-    <h2>Login</h2>
-
     <section class="registration-form">
-        <p class="login">Login</p>
+        <h1>Login</h1>
+
         <form method="post">
-            <p>
-                <label for="email" id="email">Email:</label>
+            <div>
+                <label for="email" id="email">Email:</label><br>
                 <input type="text" name="email" id="email" required>
-            </p>
-            <p>
-                <label for="password" id="password">Password:</label>
+            </div>
+            <div>
+                <label for="password" id="password">Password:</label><br>
                 <input type="password" name="password" id="password" required>
-            </p>
-            <span class="login"><button type="submit">Submit</button></span>
+            </div>
+            <button type="submit">Submit</button>
         </form>
         {% if error %}
             <p>Wrong email or password!</p>

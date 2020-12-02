@@ -23,15 +23,24 @@
     </head>
     <body>
     <h1>ProMan</h1>
+    {% if logged_in %}
+        <div class="logged-in">
+            Logged in as {{ logged_in }}
+        </div>
+    {% endif %}
     <button class="new-board">Create new board</button>
     <form method="post" class="new-board-title">
         <input type="text" name="title" required>
         <button type="submit">Save</button>
     </form>
     <section class="login">
-        <a href="/registration">Register</a>
-        <a href="/login">| Login</a>
-        <a href="/logout">Logout</a>
+        {% if not logged_in %}
+            <a href="/registration">Register</a>
+            <a href="/login">| Login</a>
+        {% else %}
+            <a href="/logout">Logout</a>
+        {% endif %}
+
     </section>
     <div class="board-container"></div>
 

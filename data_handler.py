@@ -38,8 +38,6 @@ def is_email_taken(new_email):
 
 
 def get_hashed_pw(email):
-    a = persistence.get_hashed_password(email)
-    print(a)
     return persistence.get_hashed_password(email)
 
 

@@ -11,12 +11,15 @@ app.secret_key = '\xd4S\xb5\xac5\x98+\x0b*>\xb2\x8bQL)\x97'
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
+    logged_in = None
+    if 'email' in session:
+        logged_in = session['email']
     if request.method == 'POST':
         new_title = request.form.get('title', None)
         if new_title:
             data_handler.add_new_board(new_title)
         return redirect("/")
-    return render_template('index.html')
+    return render_template('index.html', logged_in=logged_in)
 
 
 @app.route("/get-boards")
@@ -104,8 +107,8 @@ def login():
         plain_text_password = request.form['password']
         hashed_password = data_handler.get_hashed_pw(email)
         if werkzeug.security.check_password_hash(hashed_password, plain_text_password):
-            session['email'] = request.form['email']
-            return render_template('index.html', email=escape(session['email']))
+            session['email'] = email
+            return redirect('/')
         else:
             return render_template('login.html', logged_in=False, error=True)
     return render_template('login.html', logged_in=False, error=None)

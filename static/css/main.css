@@ -15,6 +15,13 @@ body{
     font-family: sans-serif;
 }
 
+.logged-in {
+    position: absolute;
+    left: 2%;
+    font-weight: bold;
+    color: #222222;
+}
+
 .login {
     display: inline-block;
     position: absolute;
