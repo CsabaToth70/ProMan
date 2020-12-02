@@ -74,7 +74,20 @@ button, .login {
 .new-board {
     position: absolute;
     top: 40px;
-    right: 25%;
+    right: 23%;
+}
+.new-private-board {
+    position: absolute;
+    top: 40px;
+    left: 23%;
+    display: none;
+}
+
+.private-board-title{
+    display: inline-block;
+    position: fixed;
+    left: 3%;
+    top: 40px;
 }
 
 .new-board-title {

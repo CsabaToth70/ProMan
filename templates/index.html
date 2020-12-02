@@ -24,15 +24,20 @@
     <body>
     <h1>ProMan</h1>
     {% if logged_in %}
-        <div class="logged-in">
-            Logged in as {{ logged_in }}
-        </div>
+        <div class="logged-in">Logged in as {{ logged_in }}</div>
     {% endif %}
     <button class="new-board">Create new board</button>
     <form method="post" class="new-board-title">
         <input type="text" name="title" required>
         <button type="submit">Save</button>
     </form>
+
+    <div class="private-board-title">
+        <input type="text" required>
+        <button type="submit">Save</button>
+    </div>
+    <button class="new-private-board">Create new private board</button>
+
     <section class="login">
         {% if not logged_in %}
             <a href="/registration">Register</a>
@@ -43,6 +48,6 @@
 
     </section>
     <div class="board-container"></div>
-
+      
     </body>
 </html>

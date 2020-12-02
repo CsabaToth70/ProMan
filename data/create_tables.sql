@@ -3,7 +3,8 @@ DROP TABLE IF EXISTS boards;
 DROP TABLE IF EXISTS statuses;
 CREATE TABLE boards (
     id SERIAL PRIMARY KEY,
-    title VARCHAR
+    title VARCHAR,
+    user_id INT
 );
 CREATE TABLE cards (
     id SERIAL PRIMARY KEY,
@@ -34,3 +35,4 @@ INSERT INTO cards (board_id, title, status_id, "order") VALUES
 (2,'done card 1',3,0),
 (2,'done card 1',3,1);
 ALTER TABLE ONLY cards ADD CONSTRAINT fk_board_id FOREIGN KEY (board_id) REFERENCES boards(id);
+

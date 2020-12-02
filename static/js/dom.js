@@ -4,6 +4,7 @@ export let dom = {
     init: function () {
         const newBoardButton = document.querySelector('.new-board');
         newBoardButton.addEventListener('click', dom.addNewBoardTitle);
+        dom.showPrivateBoardButton()
     },
     loadBoards: function () {
         dataHandler.getBoards(function (boards) {
@@ -304,19 +305,19 @@ export let dom = {
 
     //*******Add new card***************
     showNewCardButton: function (event) {
-      let currentBoardContainer = dom.getCurrentBoardContainer(event);
-      let newCardButton = currentBoardContainer.querySelector('.board-add-card');
+        let currentBoardContainer = dom.getCurrentBoardContainer(event);
+        let newCardButton = currentBoardContainer.querySelector('.board-add-card');
         newCardButton.style.display = 'inline-block';
         newCardButton.addEventListener('click', dom.showCardInput)
     },
-    showCardInput: function(event){
+    showCardInput: function (event) {
         let currentBoardContainer = dom.getCurrentBoardContainer(event);
         let cardInput = currentBoardContainer.querySelector('.new-card-title');
         cardInput.style.display = 'inline-block';
         let saveButton = event.currentTarget.parentElement.querySelector('.new-card-title button');
         saveButton.addEventListener('click', dom.getNewCard);
     },
-    getNewCard: function(event){
+    getNewCard: function (event) {
         let button = event.currentTarget;
         let inputField = button.parentElement.querySelector('.new-card-input');
         let newCard = inputField.value;
@@ -401,7 +402,7 @@ export let dom = {
         let columns = document.querySelectorAll('.board-column-content');
         dom.initStatusDraggables(cards);
         dom.initStatusDropZones(columns);
-   },
+    },
     initStatusDraggables: function (cards) {
         for (const card of cards) {
             dom.initStatusDraggable(card);
@@ -423,7 +424,7 @@ export let dom = {
         column.addEventListener("dragleave", dom.columnLeaveStatus);
         column.addEventListener("drop", dom.columnDropStatus);
     },
-    dragStartStatus: function(event) {
+    dragStartStatus: function (event) {
         event.currentTarget.classList.add('dragged');
     },
     dragEndStatus: function () {
@@ -433,13 +434,13 @@ export let dom = {
         event.currentTarget.classList.add("over-zone");
         event.preventDefault();
     },
-    columnOverStatus: function(event) {
+    columnOverStatus: function (event) {
         event.preventDefault();
     },
     columnLeaveStatus: function (event) {
         event.currentTarget.classList.remove('over-zone');
     },
-    columnDropStatus: function(event) {
+    columnDropStatus: function (event) {
         event.preventDefault();
         let draggedCard = document.querySelector('.dragged');
         let statusId = event.currentTarget.closest('.board-column').dataset.statusId;
@@ -453,4 +454,29 @@ export let dom = {
         }
         dataHandler.changeDragAndDropStatus(columnDetails);
     },
+    //********New private board************
+    getLoggedInEmail: function () {
+        let loginElement = document.querySelector(".logged-in")
+        if (loginElement !== null) {
+            return loginElement.textContent.split(" ")[3];
+        }
+
+        return loginElement
+    },
+
+    addPrivateBoard: function () {
+
+    },
+
+    showPrivateBoardButton() {
+        let email = dom.getLoggedInEmail();
+        if (email !== null) {
+            let button = document.querySelector(".new-private-board")
+            button.style.display = 'inline-block';
+            button.addEventListener("click", dom.addPrivateBoard)
+
+        }
+    },
+
 }
+
