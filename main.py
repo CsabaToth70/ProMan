@@ -138,7 +138,6 @@ def main():
 @json_response
 def add_private_board():
     new_private_board_details = request.json
-
     data_handler.add_new_private_board(new_private_board_details)
     return ''
 
