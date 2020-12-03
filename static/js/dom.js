@@ -25,6 +25,7 @@ export let dom = {
         }
         dom.listenForBoardTitleClick();
         dom.listenForToggleClick();
+
     },
     loadStatuses: function (event) {
         let board = event.currentTarget.closest('.board');
@@ -41,6 +42,8 @@ export let dom = {
         for (let card of cards) {
             dom.createCardElements(card, boardId)
         }
+        let cardelements = document.querySelectorAll(".card");
+        dom.deleteCards(cardelements);
     },
 
     //****** Cards' list overview *********
@@ -65,6 +68,8 @@ export let dom = {
         }
         dom.listenForCardTitleClick();
         dom.initDragAndDropStatus();
+
+
     },
     clearCards: function () {
         let boardColumns = document.querySelectorAll('.board-columns');
@@ -491,16 +496,26 @@ export let dom = {
     showPrivateBoardInput: function () {
         document.querySelector(".private-board-title").style.display = "inline-block"
     },
-    saveNewPrivateBoard: async function(event){
+    saveNewPrivateBoard: async function (event) {
         let newPrivateBoardTitle = event.currentTarget.closest(".private-board-title").querySelector("input").value
         let userEmail = dom.getLoggedInEmail();
-        let newPrivateBoardDict = {'title': newPrivateBoardTitle, 'user_email':userEmail};
+        let newPrivateBoardDict = {'title': newPrivateBoardTitle, 'user_email': userEmail};
         document.querySelector(".private-board-title").style.display = "none"
         dataHandler.NewPrivateBoard(newPrivateBoardDict);
         dom.clearBoards();
         await dom.loadBoards();
 
-    }
+    },
+    //********Delete************
+    deleteCards: function (cards) {
+        for (let card of cards) {
+            let deleteButton = card.querySelector(".card-remove")
+            deleteButton.addEventListener("click", dom.deleteGivenCard)
+        }
+    },
+    deleteGivenCard: function(event){
+        let cardId = event.currentTarget.parentElement.dataset.cardId;
 
+    }
 }
 
