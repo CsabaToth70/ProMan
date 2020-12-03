@@ -25,6 +25,7 @@ export let dom = {
         }
         dom.listenForBoardTitleClick();
         dom.listenForToggleClick();
+        dom.listenForBoardTrashClick();
 
     },
     loadStatuses: function (event) {
@@ -85,6 +86,7 @@ export let dom = {
     createBoardElements: function (board) {
         let boardTitle = `<span class="board-title">${board.title}</span>`;
         let headerButtons = `
+            <div class="delete-board"><i class="fas fa-trash-alt"></i></div>
             <button class="board-add-card">Create new card</button>
              <div class="new-card-title">
                 <input class="new-card-input" type="text" name="card" required>
@@ -509,7 +511,7 @@ export let dom = {
         dom.clearBoards();
         dom.loadBoards();
     },
-    //********Delete crads ************
+    //********Delete cards ************
     deleteCards: function (cards) {
         for (let card of cards) {
             let deleteButton = card.querySelector(".card-remove")
@@ -523,7 +525,18 @@ export let dom = {
         dom.loadBoards();
 
     },
-    //********Delete status ************
-
+    //********Delete board ************
+    listenForBoardTrashClick: function(){
+        let trashIcons = document.querySelectorAll(".delete-board");
+        for (let icon of trashIcons){
+            icon.addEventListener("click", dom.deleteBoard);
+        }
+    },
+    deleteBoard: function(event){
+        let boardToBeDeleted = event.currentTarget.closest(".board-header");
+        let boardId = boardToBeDeleted.dataset.boardId;
+        dataHandler.removeBoard(boardId);
+        setTimeout(()=> dom.refreshBoards(), 100)
+    }
 }
 

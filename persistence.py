@@ -171,6 +171,15 @@ def _delete_card_by_id(cursor: RealDictCursor, card_id: int):
     cursor.execute(query, {'i_d': card_id})
 
 
+@connection.connection_handler
+def _delete_board(cursor:RealDictCursor, board_id):
+    query = """
+       DELETE FROM cards WHERE board_id = %(board_id)s;
+       DELETE FROM boards WHERE id = %(board_id)s;
+       """
+    cursor.execute(query, {'board_id': board_id})
+
+
 def create_new_public_board(board_title):
     _add_new_board(board_title)
 
@@ -248,3 +257,6 @@ def get_private_board_by_user(email):
 
 def delete_card_by_id(card_id):
     return _delete_card_by_id(card_id)
+
+def delete_board_by_id(board_id):
+    return _delete_board(board_id)

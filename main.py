@@ -149,5 +149,14 @@ def delete_card_by_id():
     data_handler.delete_card(card_id)
     return' '
 
+
+@app.route('/delete-board-by-id', methods=['POST'])
+@json_response
+def delete_board():
+    board_id = request.json
+    data_handler.remove_board(board_id)
+    return ''
+
+
 if __name__ == '__main__':
     main()

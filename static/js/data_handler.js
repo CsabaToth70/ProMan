@@ -88,5 +88,8 @@ export let dataHandler = {
     },
     deleteCardById: function (cardId){
         this._api_post('/delete-card-by-id', cardId);
+    },
+    removeBoard: function (boardId){
+        this._api_post('/delete-board-by-id', boardId);
     }
 };

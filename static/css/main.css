@@ -121,7 +121,7 @@ section.board{
     font-size: 20px;
 
 }
-.board-title, .board-add-card, .board-add-column, .new-status-title, .board-toggle{
+.board-title, .delete-board, .board-add-card, .board-add-column, .new-status-title, .board-toggle{
     display: inline-block;
 }
 

@@ -84,3 +84,6 @@ def get_private_boards(email):
 
 def delete_card(card_id):
     return persistence.delete_card_by_id(card_id)
+
+def remove_board(board_id):
+    return persistence.delete_board_by_id(board_id)
