@@ -143,5 +143,12 @@ def add_private_board():
     return ''
 
 
+@app.route('/delete-card-by-id', methods=['POST'])
+@json_response
+def delete_card_by_id():
+    card_id = request.json
+    data_handler.delete_card(card_id)
+    return' '
+
 if __name__ == '__main__':
     main()

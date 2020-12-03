@@ -80,3 +80,7 @@ def add_new_private_board(new_private_board_details):
 
 def get_private_boards(email):
     return persistence.get_private_board_by_user(email)
+
+
+def delete_card(card_id):
+    return persistence.delete_card_by_id(card_id)

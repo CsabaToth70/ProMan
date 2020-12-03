@@ -85,5 +85,8 @@ export let dataHandler = {
     },
     NewPrivateBoard: function (newPrivateBoardDict){
         this._api_post('/add-private-board', newPrivateBoardDict);
+    },
+    deleteCardById: function (cardId){
+        this._api_post('/delete-card-by-id', cardId);
     }
 };

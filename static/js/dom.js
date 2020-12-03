@@ -502,8 +502,8 @@ export let dom = {
         let newPrivateBoardDict = {'title': newPrivateBoardTitle, 'user_email': userEmail};
         document.querySelector(".private-board-title").style.display = "none"
         dataHandler.NewPrivateBoard(newPrivateBoardDict);
-        dom.clearBoards();
-        await dom.loadBoards();
+        await dom.clearBoards();
+        dom.loadBoards();
 
     },
     //********Delete************
@@ -513,8 +513,11 @@ export let dom = {
             deleteButton.addEventListener("click", dom.deleteGivenCard)
         }
     },
-    deleteGivenCard: function(event){
+    deleteGivenCard: async function(event){
         let cardId = event.currentTarget.parentElement.dataset.cardId;
+        await dataHandler.deleteCardById(cardId);
+        dom.clearBoards();
+        dom.loadBoards();
 
     }
 }
