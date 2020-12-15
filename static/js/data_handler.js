@@ -14,7 +14,7 @@ export let dataHandler = {
         .then(json_response => callback(json_response));
     },
     _api_post: function (url, data) {
-        fetch(url, {
+        return fetch(url, {
             method: 'POST',
             credentials: 'same-origin',
             headers: {'Content-Type': 'application/json'},
@@ -86,10 +86,10 @@ export let dataHandler = {
     NewPrivateBoard: function (newPrivateBoardDict){
         this._api_post('/add-private-board', newPrivateBoardDict);
     },
-    deleteCardById: function (cardId){
-        this._api_post('/delete-card-by-id', cardId);
+    deleteCardById: async function (cardId){
+        await this._api_post('/delete-card-by-id', cardId);
     },
-    removeBoard: function (boardId){
-        this._api_post('/delete-board-by-id', boardId);
+    removeBoard: async function (boardId){
+        await this._api_post('/delete-board-by-id', boardId);
     }
 };

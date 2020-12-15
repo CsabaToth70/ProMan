@@ -181,6 +181,7 @@ export let dom = {
         let boardBody = board.querySelector('.board-columns');
         boardBody.insertAdjacentHTML('afterbegin', `
                 <div class="board-column" data-status-id="${status.id}">
+                    <div class="column-remove"><i class="fas fa-trash-alt"></i></div>
                     <div class="board-column-title">${status.title}</div>
                     <div class="board-column-content"></div>
                 </div>`)
@@ -252,6 +253,7 @@ export let dom = {
         for (let status of statuses) {
             dom.createColumns(status, board)
         }
+        dom.deleteStatus(statuses)
     },
     getNewStatus: function (event) {
         let button = event.currentTarget;
@@ -504,7 +506,7 @@ export let dom = {
         let newPrivateBoardDict = {'title': newPrivateBoardTitle, 'user_email': userEmail};
         document.querySelector(".private-board-title").style.display = "none"
         dataHandler.NewPrivateBoard(newPrivateBoardDict)
-        setTimeout(()=> dom.refreshBoards(), 100);
+        setTimeout(() => dom.refreshBoards(), 100);
     },
 
     refreshBoards: function () {
@@ -526,17 +528,43 @@ export let dom = {
 
     },
     //********Delete board ************
-    listenForBoardTrashClick: function(){
+    listenForBoardTrashClick: function () {
         let trashIcons = document.querySelectorAll(".delete-board");
-        for (let icon of trashIcons){
+        for (let icon of trashIcons) {
             icon.addEventListener("click", dom.deleteBoard);
         }
     },
-    deleteBoard: function(event){
+    deleteBoard: async function (event) {
         let boardToBeDeleted = event.currentTarget.closest(".board-header");
         let boardId = boardToBeDeleted.dataset.boardId;
-        dataHandler.removeBoard(boardId);
-        setTimeout(()=> dom.refreshBoards(), 100)
+        await dataHandler.removeBoard(boardId);
+        dom.refreshBoards();
+        //    ToDo: board -> display:none with dom manipulation
+    },
+
+    //********Delete status ************
+    deleteStatus: function (statuses) {
+        let trashIcons = document.querySelectorAll('.column-remove');
+        for (let trashIcon of trashIcons) {
+            trashIcon.addEventListener("click", dom.deleteGivenStatus)
+        }
+    },
+    deleteGivenStatus: async function (event) {
+        let statusId = event.currentTarget.parentElement.dataset.statusId;
+        let boardIdNode = event.currentTarget.closest('.board').firstChild;
+        let boarId = boardIdNode.dataset.boardId;
+        let board = event.currentTarget.closest('.board')
+        let column = event.currentTarget.parentElement
+        let cards = column.querySelectorAll('.card-title');
+        for (let card of cards){
+            await dataHandler.deleteCardById(card.closest('.card').dataset.cardId);
+        }
+
+        // let statusId = event.currentTarget.parentElement.;
+        // await dataHandler.deleteCardById(cardId);
+        // dom.clearBoards();
+        // dom.loadBoards();
+
     }
 }
 
