@@ -91,5 +91,12 @@ export let dataHandler = {
     },
     removeBoard: async function (boardId){
         await this._api_post('/delete-board-by-id', boardId);
+    },
+    queryColumnList: async function (){
+        return await this._api_post('/column', 'True');
+    },
+    saveColumnId: async function(columnId, boardId, statusId){
+        let columnInfo = [columnId, boardId, statusId];
+        await this._api_post('/save-column', columnInfo);
     }
 };

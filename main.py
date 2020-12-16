@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, redirect, session, escape
+from flask import Flask, render_template, url_for, request, redirect, session, escape, jsonify
 import werkzeug
 from werkzeug import security
 
@@ -155,6 +155,20 @@ def delete_card_by_id():
 def delete_board():
     board_id = request.json
     data_handler.remove_board(board_id)
+    return ''
+
+
+@app.route('/column', methods=['GET', 'POST'])
+@json_response
+def report_column_ids():
+    return data_handler.get_column_ids()
+
+
+@app.route('/save-column', methods=['POST'])
+@json_response
+def save_column():
+    column_info = request.json
+    data_handler.save_new_column(column_info)
     return ''
 
 

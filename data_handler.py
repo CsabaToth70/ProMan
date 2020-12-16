@@ -85,5 +85,14 @@ def get_private_boards(email):
 def delete_card(card_id):
     return persistence.delete_card_by_id(card_id)
 
+
 def remove_board(board_id):
     return persistence.delete_board_by_id(board_id)
+
+
+def get_column_ids():
+    return persistence.list_column_ids()
+
+
+def save_new_column(column_info):
+    persistence.save_column_id(column_info[0], column_info[1], column_info[2])

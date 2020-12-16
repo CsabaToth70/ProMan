@@ -258,5 +258,22 @@ def get_private_board_by_user(email):
 def delete_card_by_id(card_id):
     return _delete_card_by_id(card_id)
 
+
+@connection.connection_handler
+def list_column_ids(cursor: RealDictCursor):
+    query = '''SELECT column_id FROM columns;'''
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
 def delete_board_by_id(board_id):
     return _delete_board(board_id)
+
+
+@connection.connection_handler
+def save_column_id(cursor: RealDictCursor, column_id, board_id, status_id):
+    query = """
+        INSERT INTO columns (column_id, board_id, status_id) VALUES
+        (%(c_d)s, %(b_d)s, %(s_d)s);
+    """
+    cursor.execute(query, {'c_d': column_id, 'b_d': board_id, 's_d': status_id})

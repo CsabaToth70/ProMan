@@ -32,6 +32,7 @@ export let dom = {
         let board = event.currentTarget.closest('.board');
         dataHandler.getStatuses(function (statuses) {
             dom.showColumns(statuses, board);
+
         });
     },
     loadCards: function (boardId) {
@@ -175,17 +176,19 @@ export let dom = {
         renameDiv.remove();
     },
 
-    // ***** Board view with 4 default columns *****
+    // ***** Board view with 4 default columns *****************************************************
 
-    createColumns: function (status, board) {
+    createColumns: function (status, board, boardId) {
         let boardBody = board.querySelector('.board-columns');
         boardBody.insertAdjacentHTML('afterbegin', `
-                <div class="board-column" data-status-id="${status.id}">
+                <div class="board-column" data-status-id="${status.id}" 
+                data-column-id="${String(boardId) + String(status.id)}">
                     <div class="column-remove"><i class="fas fa-trash-alt"></i></div>
                     <div class="board-column-title">${status.title}</div>
                     <div class="board-column-content"></div>
                 </div>`)
         dom.listenForColumnTitleClick();
+
     },
     listenForToggleClick: function () {
         let toggles = document.querySelectorAll(".board-toggle");
@@ -249,17 +252,36 @@ export let dom = {
         let saveButton = event.currentTarget.parentElement.querySelector('.new-status-title button');
         saveButton.addEventListener('click', dom.getNewStatus);
     },
-    showColumns: function (statuses, board) {
+    showColumns: async function (statuses, board) {
+        let boardId = board.firstChild.dataset.boardId;
+        let columnIdList = await dataHandler.queryColumnList();
+        let idList = dom.createColumnIdList(columnIdList);
         for (let status of statuses) {
-            dom.createColumns(status, board)
+            await dom.createColumns(status, board, boardId);
+            if(!(idList.includes(status.id))) {
+                let statusId = status.id;
+                let columnId = String(boardId) + String(statusId)
+                await dataHandler.saveColumnId(columnId, boardId, statusId)
+                idList = dom.createColumnIdList(columnIdList);
+                idList.push(status.id);
+            }
         }
         dom.deleteStatus(statuses)
+    },
+    createColumnIdList: function (columnIdList){
+        let idList = [];
+        for(let row of columnIdList){
+            idList.push(row['column_id']);
+        }
+        return idList
     },
     getNewStatus: function (event) {
         let button = event.currentTarget;
         let inputField = button.parentElement.querySelector('.new-status-input');
         let newStatus = inputField.value;
         dataHandler.addStatus(newStatus);
+
+        //########################################################################################
         dom.clearBoards();
         dom.loadBoards();
     },
@@ -559,6 +581,11 @@ export let dom = {
         for (let card of cards){
             await dataHandler.deleteCardById(card.closest('.card').dataset.cardId);
         }
+
+
+
+        dom.clearBoards();
+        dom.loadBoards();
 
         // let statusId = event.currentTarget.parentElement.;
         // await dataHandler.deleteCardById(cardId);
