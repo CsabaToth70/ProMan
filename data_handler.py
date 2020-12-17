@@ -95,4 +95,13 @@ def get_column_ids():
 
 
 def save_new_column(column_info):
-    persistence.save_column_id(column_info[0], column_info[1], column_info[2])
+    persistence.save_column_id(int(column_info[0]), int(column_info[1]), int(column_info[2]), bool(column_info[3]))
+
+
+def validate_column(column_id):
+    list_of_active_column = persistence.is_active_column(column_id)
+    return list_of_active_column
+
+
+def check_column(column_id):
+    return persistence.deactivate_column(column_id)

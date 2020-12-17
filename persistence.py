@@ -18,7 +18,7 @@ def _get_boards(cursor: RealDictCursor):
 
 
 @connection.connection_handler
-def _get_private_boards(cursor: RealDictCursor, email:str):
+def _get_private_boards(cursor: RealDictCursor, email: str):
     query = """
       SELECT * FROM boards
       WHERE user_email = %(email)s OR user_email IS NULL
@@ -172,7 +172,7 @@ def _delete_card_by_id(cursor: RealDictCursor, card_id: int):
 
 
 @connection.connection_handler
-def _delete_board(cursor:RealDictCursor, board_id):
+def _delete_board(cursor: RealDictCursor, board_id):
     query = """
        DELETE FROM cards WHERE board_id = %(board_id)s;
        DELETE FROM boards WHERE id = %(board_id)s;
@@ -271,9 +271,25 @@ def delete_board_by_id(board_id):
 
 
 @connection.connection_handler
-def save_column_id(cursor: RealDictCursor, column_id, board_id, status_id):
+def save_column_id(cursor: RealDictCursor, column_id, board_id, status_id, is_active):
     query = """
-        INSERT INTO columns (column_id, board_id, status_id) VALUES
-        (%(c_d)s, %(b_d)s, %(s_d)s);
+        INSERT INTO columns (column_id, board_id, status_id, is_active) VALUES
+        (%(c_d)s, %(b_d)s, %(s_d)s, %(i_e)s);
     """
-    cursor.execute(query, {'c_d': column_id, 'b_d': board_id, 's_d': status_id})
+    cursor.execute(query, {'c_d': column_id, 'b_d': board_id, 's_d': status_id,
+                           'i_e': is_active})
+
+
+@connection.connection_handler
+def is_active_column(cursor: RealDictCursor, column_id):
+    query = '''SELECT is_active FROM columns WHERE %(c_d)s = column_id GROUP BY is_active;'''
+    cursor.execute(query, {'c_d': column_id})
+    return cursor.fetchone()
+
+
+@connection.connection_handler
+def deactivate_column(cursor: RealDictCursor, column_id):
+    query = '''UPDATE columns
+    SET is_active = false
+    WHERE column_id = %(c_d)s;'''
+    cursor.execute(query, {'c_d': column_id})

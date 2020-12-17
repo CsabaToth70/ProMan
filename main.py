@@ -172,5 +172,18 @@ def save_column():
     return ''
 
 
+@app.route('/column-validation', methods=['POST'])
+def validate_column():
+    column_id = request.json
+    return data_handler.validate_column(column_id)
+
+
+@app.route('/deactivate-column', methods=['POST'])
+def deactivate_column():
+    column_id = request.json
+    data_handler.check_column(column_id)
+    return ''
+
+
 if __name__ == '__main__':
     main()

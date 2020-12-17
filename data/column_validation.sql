@@ -1,0 +1,1 @@
+ALTER TABLE columns ADD is_active boolean DEFAULT True;

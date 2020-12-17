@@ -62,32 +62,32 @@ export let dataHandler = {
     createNewBoard: function (boardTitle, callback) {
         // creates new board, saves it and calls the callback function with its data
     },
-    createNewCard: function (cardTitle, boardId, statusId) {
+    createNewCard: async function (cardTitle, boardId, statusId) {
         let cardDict = {'title':cardTitle, 'board_id':parseInt(boardId), 'status_id': parseInt(statusId)};
-        this._api_post('/add-card', cardDict);
+        await this._api_post('/add-card', cardDict);
 
         // creates new card, saves it and calls the callback function with its data
     },
-    renameBoard: function (changedBoardData) {
-        this._api_post('/rename-board', changedBoardData);
+    renameBoard: async function (changedBoardData) {
+        await this._api_post('/rename-board', changedBoardData);
     },
-    addStatus: function (newStatus) {
-        this._api_post('/add-status', newStatus);
+    addStatus: async function (newStatus) {
+        await this._api_post('/add-status', newStatus);
     },
-    renameColumn: function (changedColumnData) {
-        this._api_post('/rename-column', changedColumnData);
+    renameColumn: async function (changedColumnData) {
+        await this._api_post('/rename-column', changedColumnData);
     },
-    renameCard: function (changedCardData) {
-        this._api_post('/rename-card', changedCardData);
+    renameCard: async function (changedCardData) {
+        await this._api_post('/rename-card', changedCardData);
     },
-    changeDragAndDropStatus: function (columnDetails) {
-        this._api_post('/update-card-status', columnDetails);
+    changeDragAndDropStatus: async function (columnDetails) {
+        await this._api_post('/update-card-status', columnDetails);
     },
     NewPrivateBoard: function (newPrivateBoardDict){
         this._api_post('/add-private-board', newPrivateBoardDict);
     },
-    deleteCardById: async function (cardId){
-        await this._api_post('/delete-card-by-id', cardId);
+    deleteCardById: function (cardId){
+        this._api_post('/delete-card-by-id', cardId);
     },
     removeBoard: async function (boardId){
         await this._api_post('/delete-board-by-id', boardId);
@@ -95,8 +95,14 @@ export let dataHandler = {
     queryColumnList: async function (){
         return await this._api_post('/column', 'True');
     },
-    saveColumnId: async function(columnId, boardId, statusId){
-        let columnInfo = [columnId, boardId, statusId];
+    saveColumnId: async function(columnId, boardId, statusId, isActive){
+        let columnInfo = [columnId, boardId, statusId, isActive];
         await this._api_post('/save-column', columnInfo);
+    },
+    checkValidation: async function (columnId){
+        return await this._api_post('/column-validation', columnId);
+    },
+    deActivateColumn: function (columnId){
+        this._api_post('/deactivate-column', columnId);
     }
 };

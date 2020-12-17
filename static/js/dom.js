@@ -32,7 +32,6 @@ export let dom = {
         let board = event.currentTarget.closest('.board');
         dataHandler.getStatuses(function (statuses) {
             dom.showColumns(statuses, board);
-
         });
     },
     loadCards: function (boardId) {
@@ -51,13 +50,16 @@ export let dom = {
     //****** Cards' list overview *********
 
     createCardElements: function (card, boardId) {
+        console.log('card: ', card, 'boardId', boardId);
         let boardHeaders = document.querySelectorAll(".board-header");
         for (let boardHeader of boardHeaders) {
             let targetBoardId = boardHeader.dataset.boardId;
             if (targetBoardId === boardId.toString()) {
+
                 let statusTitles = boardHeader.parentElement.querySelectorAll(".board-column-title");
+                console.log('statusTitles: ', statusTitles);
                 for (let statusTitle of statusTitles) {
-                    if (statusTitle.textContent === card['status_id']) {
+                    if (statusTitle.textContent === String(card.status_id)) {
                         let currentColumnContent = statusTitle.parentElement.querySelector(".board-column-content");
                         currentColumnContent.insertAdjacentHTML('afterbegin',
                             `<div class="card" data-card-id="${card.id}">
@@ -253,33 +255,39 @@ export let dom = {
         saveButton.addEventListener('click', dom.getNewStatus);
     },
     showColumns: async function (statuses, board) {
-        let boardId = board.firstChild.dataset.boardId;
+        let boardId = parseInt(board.firstChild.dataset.boardId);
         let columnIdList = await dataHandler.queryColumnList();
         let idList = dom.createColumnIdList(columnIdList);
         for (let status of statuses) {
-            await dom.createColumns(status, board, boardId);
-            if(!(idList.includes(status.id))) {
-                let statusId = status.id;
-                let columnId = String(boardId) + String(statusId)
-                await dataHandler.saveColumnId(columnId, boardId, statusId)
+            let statusId = parseInt(status.id);
+            let columnId = String(boardId) + String(statusId)   // ToDo ***** check/complete the validation workflow
+            columnId = parseInt(columnId);
+            if (!(idList.includes(columnId))) {
+                let isActive = 'True';
+                await dataHandler.saveColumnId(columnId, boardId, statusId, isActive)
                 idList = dom.createColumnIdList(columnIdList);
                 idList.push(status.id);
+            }
+            let isValidColumnDict = await dataHandler.checkValidation(columnId);
+            let isValidColumn = isValidColumnDict.is_active;
+            if (isValidColumn) {
+                dom.createColumns(status, board, boardId);
             }
         }
         dom.deleteStatus(statuses)
     },
-    createColumnIdList: function (columnIdList){
+    createColumnIdList: function (columnIdList) {
         let idList = [];
-        for(let row of columnIdList){
-            idList.push(row['column_id']);
+        for (let row of columnIdList) {
+            idList.push(parseInt(row['column_id']));
         }
         return idList
     },
-    getNewStatus: function (event) {
+    getNewStatus: async function (event) {
         let button = event.currentTarget;
         let inputField = button.parentElement.querySelector('.new-status-input');
         let newStatus = inputField.value;
-        dataHandler.addStatus(newStatus);
+        await dataHandler.addStatus(newStatus);
 
         //########################################################################################
         dom.clearBoards();
@@ -320,9 +328,9 @@ export let dom = {
             dom.getChangedColumnTitle(event);
         }
     },
-    getChangedColumnTitle: function (event) {
+    getChangedColumnTitle: async function (event) {
         let changedColumn = {'original_title': event.target.defaultValue, 'new_title': event.target.value};
-        dataHandler.renameColumn(changedColumn);
+        await dataHandler.renameColumn(changedColumn);
     },
     handleEscape: function (event) {
         if (event.key === 'Escape') {
@@ -356,13 +364,13 @@ export let dom = {
         let saveButton = event.currentTarget.parentElement.querySelector('.new-card-title button');
         saveButton.addEventListener('click', dom.getNewCard);
     },
-    getNewCard: function (event) {
+    getNewCard: async function (event) {
         let button = event.currentTarget;
         let inputField = button.parentElement.querySelector('.new-card-input');
         let newCard = inputField.value;
         let statusId = 0;
         let boardId = event.currentTarget.closest(".board-header").dataset.boardId;
-        dataHandler.createNewCard(newCard, boardId, statusId);
+        await dataHandler.createNewCard(newCard, boardId, statusId);
         dom.clearBoards();
         dom.loadBoards();
     },
@@ -408,11 +416,11 @@ export let dom = {
             dom.getChangedCardTitle(event);
         }
     },
-    getChangedCardTitle: function (event) {
+    getChangedCardTitle: async function (event) {
         let cardId = event.currentTarget.closest('.card').dataset.cardId;
         console.log(cardId)
         let changedCard = {'card_id': cardId, 'new_title': event.target.value};
-        dataHandler.renameCard(changedCard);
+        await dataHandler.renameCard(changedCard);
         dom.clearBoards();
         dom.loadBoards();
     },
@@ -479,7 +487,7 @@ export let dom = {
     columnLeaveStatus: function (event) {
         event.currentTarget.classList.remove('over-zone');
     },
-    columnDropStatus: function (event) {
+    columnDropStatus: async function (event) {
         event.preventDefault();
         let draggedCard = document.querySelector('.dragged');
         let statusId = event.currentTarget.closest('.board-column').dataset.statusId;
@@ -491,7 +499,7 @@ export let dom = {
             card.setAttribute('data-order', i.toString())
             columnDetails.push({'order': i, 'card_id': card.dataset.cardId, 'status_id': statusId});
         }
-        dataHandler.changeDragAndDropStatus(columnDetails);
+        await dataHandler.changeDragAndDropStatus(columnDetails);
     },
     //********New private board************
     getLoggedInEmail: function () {
@@ -571,21 +579,21 @@ export let dom = {
             trashIcon.addEventListener("click", dom.deleteGivenStatus)
         }
     },
-    deleteGivenStatus: async function (event) {
+    deleteGivenStatus: function (event) {
         let statusId = event.currentTarget.parentElement.dataset.statusId;
         let boardIdNode = event.currentTarget.closest('.board').firstChild;
-        let boarId = boardIdNode.dataset.boardId;
+        let boardId = boardIdNode.dataset.boardId;
+        let columnId = String(boardId) + String(statusId)   // ToDo ***** check/complete the validation workflow
+        columnId = parseInt(columnId);
         let board = event.currentTarget.closest('.board')
         let column = event.currentTarget.parentElement
         let cards = column.querySelectorAll('.card-title');
-        for (let card of cards){
-            await dataHandler.deleteCardById(card.closest('.card').dataset.cardId);
+        for (let card of cards) {
+            dataHandler.deleteCardById(card.closest('.card').dataset.cardId);
         }
-
-
-
+        dataHandler.deActivateColumn(columnId)
         dom.clearBoards();
-        dom.loadBoards();
+        dom.loadBoards();   // TODO****************************************************
 
         // let statusId = event.currentTarget.parentElement.;
         // await dataHandler.deleteCardById(cardId);
