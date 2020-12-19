@@ -50,14 +50,12 @@ export let dom = {
     //****** Cards' list overview *********
 
     createCardElements: function (card, boardId) {
-        console.log('card: ', card, 'boardId', boardId);
         let boardHeaders = document.querySelectorAll(".board-header");
         for (let boardHeader of boardHeaders) {
             let targetBoardId = boardHeader.dataset.boardId;
             if (targetBoardId === boardId.toString()) {
-
                 let statusTitles = boardHeader.parentElement.querySelectorAll(".board-column-title");
-                console.log('statusTitles: ', statusTitles);
+
                 for (let statusTitle of statusTitles) {
                     if (statusTitle.textContent === String(card.status_id)) {
                         let currentColumnContent = statusTitle.parentElement.querySelector(".board-column-content");
@@ -72,8 +70,6 @@ export let dom = {
         }
         dom.listenForCardTitleClick();
         dom.initDragAndDropStatus();
-
-
     },
     clearCards: function () {
         let boardColumns = document.querySelectorAll('.board-columns');
@@ -178,7 +174,7 @@ export let dom = {
         renameDiv.remove();
     },
 
-    // ***** Board view with 4 default columns *****************************************************
+    // ***** Board view with 4 default columns ****
 
     createColumns: function (status, board, boardId) {
         let boardBody = board.querySelector('.board-columns');
@@ -211,8 +207,6 @@ export let dom = {
         dom.showNewCardButton(event);
         currentBoardTitle.removeEventListener("click", dom.changeBoardName);
         currentBoardTitle.addEventListener('click', dom.closeBoard);
-
-        dom.loadCards(boardId);
         clickedToggle.removeEventListener("click", dom.showSelectedBoard);
     },
     getCurrentBoardContainer: function (event) {
@@ -260,7 +254,7 @@ export let dom = {
         let idList = dom.createColumnIdList(columnIdList);
         for (let status of statuses) {
             let statusId = parseInt(status.id);
-            let columnId = String(boardId) + String(statusId)   // ToDo ***** check/complete the validation workflow
+            let columnId = String(boardId) + String(statusId)
             columnId = parseInt(columnId);
             if (!(idList.includes(columnId))) {
                 let isActive = 'True';
@@ -274,6 +268,7 @@ export let dom = {
                 dom.createColumns(status, board, boardId);
             }
         }
+        dom.loadCards(boardId);
         dom.deleteStatus(statuses)
     },
     createColumnIdList: function (columnIdList) {
@@ -288,8 +283,6 @@ export let dom = {
         let inputField = button.parentElement.querySelector('.new-status-input');
         let newStatus = inputField.value;
         await dataHandler.addStatus(newStatus);
-
-        //########################################################################################
         dom.clearBoards();
         dom.loadBoards();
     },
@@ -418,7 +411,6 @@ export let dom = {
     },
     getChangedCardTitle: async function (event) {
         let cardId = event.currentTarget.closest('.card').dataset.cardId;
-        console.log(cardId)
         let changedCard = {'card_id': cardId, 'new_title': event.target.value};
         await dataHandler.renameCard(changedCard);
         dom.clearBoards();
