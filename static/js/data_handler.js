@@ -1,17 +1,12 @@
-// this object contains the functions which handle the data and its reading/writing
-// feel free to extend and change to fit your needs
-
-// (watch out: when you would like to use a property/function of an object from the
-// object itself then you must use the 'this' keyword before. For example: 'this._data' below)
 export let dataHandler = {
-    _data: {}, // it is a "cache for all data received: boards, cards and statuses. It is not accessed from outside.
+    _data: {},
     _api_get: function (url, callback) {
         fetch(url, {
             method: 'GET',
             credentials: 'same-origin'
         })
-        .then(response => response.json())
-        .then(json_response => callback(json_response));
+            .then(response => response.json())
+            .then(json_response => callback(json_response));
     },
     _api_post: function (url, data) {
         return fetch(url, {
@@ -20,7 +15,7 @@ export let dataHandler = {
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(data)
         })
-        .then(response => response.json())
+            .then(response => response.json())
     },
     init: function () {
     },
@@ -48,22 +43,22 @@ export let dataHandler = {
         });
     },
     getStatus: function (statusId, callback) {
-        // the status is retrieved and then the callback function is called with the status
+
     },
     getCardsByBoardId: function (boardId, callback) {
-            this._api_get(`/get-cards/${boardId}`,  (response) => {
+        this._api_get(`/get-cards/${boardId}`, (response) => {
             this._data['cards'] = response;
             callback(response);
         }, boardId);
     },
     getCard: function (cardId, callback) {
-        // the card is retrieved and then the callback function is called with the card
+
     },
     createNewBoard: function (boardTitle, callback) {
-        // creates new board, saves it and calls the callback function with its data
+
     },
     createNewCard: async function (cardTitle, boardId, statusId) {
-        let cardDict = {'title':cardTitle, 'board_id':parseInt(boardId), 'status_id': parseInt(statusId)};
+        let cardDict = {'title': cardTitle, 'board_id': parseInt(boardId), 'status_id': parseInt(statusId)};
         await this._api_post('/add-card', cardDict);
 
         // creates new card, saves it and calls the callback function with its data
@@ -83,26 +78,26 @@ export let dataHandler = {
     changeDragAndDropStatus: async function (columnDetails) {
         await this._api_post('/update-card-status', columnDetails);
     },
-    NewPrivateBoard: function (newPrivateBoardDict){
+    NewPrivateBoard: function (newPrivateBoardDict) {
         this._api_post('/add-private-board', newPrivateBoardDict);
     },
-    deleteCardById: function (cardId){
+    deleteCardById: function (cardId) {
         this._api_post('/delete-card-by-id', cardId);
     },
-    removeBoard: async function (boardId){
+    removeBoard: async function (boardId) {
         await this._api_post('/delete-board-by-id', boardId);
     },
-    queryColumnList: async function (){
+    queryColumnList: async function () {
         return await this._api_post('/column', 'True');
     },
-    saveColumnId: async function(columnId, boardId, statusId, isActive){
+    saveColumnId: async function (columnId, boardId, statusId, isActive) {
         let columnInfo = [columnId, boardId, statusId, isActive];
         await this._api_post('/save-column', columnInfo);
     },
-    checkValidation: async function (columnId){
+    checkValidation: async function (columnId) {
         return await this._api_post('/column-validation', columnId);
     },
-    deActivateColumn: function (columnId){
+    deActivateColumn: function (columnId) {
         this._api_post('/deactivate-column', columnId);
     }
 };

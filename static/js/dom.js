@@ -561,7 +561,7 @@ export let dom = {
         let boardId = boardToBeDeleted.dataset.boardId;
         await dataHandler.removeBoard(boardId);
         dom.refreshBoards();
-        //    ToDo: board -> display:none with dom manipulation
+
     },
 
     //********Delete status ************
@@ -575,7 +575,7 @@ export let dom = {
         let statusId = event.currentTarget.parentElement.dataset.statusId;
         let boardIdNode = event.currentTarget.closest('.board').firstChild;
         let boardId = boardIdNode.dataset.boardId;
-        let columnId = String(boardId) + String(statusId)   // ToDo ***** check/complete the validation workflow
+        let columnId = String(boardId) + String(statusId)
         columnId = parseInt(columnId);
         let board = event.currentTarget.closest('.board')
         let column = event.currentTarget.parentElement
@@ -585,13 +585,7 @@ export let dom = {
         }
         dataHandler.deActivateColumn(columnId)
         dom.clearBoards();
-        dom.loadBoards();   // TODO****************************************************
-
-        // let statusId = event.currentTarget.parentElement.;
-        // await dataHandler.deleteCardById(cardId);
-        // dom.clearBoards();
-        // dom.loadBoards();
-
+        dom.loadBoards();
     }
 }
 

@@ -9,6 +9,7 @@ app = Flask(__name__)
 
 app.secret_key = '\xd4S\xb5\xac5\x98+\x0b*>\xb2\x8bQL)\x97'
 
+
 @app.route("/", methods=['GET', 'POST'])
 def index():
     logged_in = None
@@ -147,7 +148,7 @@ def add_private_board():
 def delete_card_by_id():
     card_id = request.json
     data_handler.delete_card(card_id)
-    return' '
+    return ' '
 
 
 @app.route('/delete-board-by-id', methods=['POST'])
