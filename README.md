@@ -12,10 +12,11 @@ Our learning aim was to:<br>
 
 ## Applied technologies
 
-![](js_py.png)![](flask_psql_logos.png)
+Front end: HTML, CSS, Javascript<br>
+Back end: Python, Flask server, postgres-based database<br><br>
 
-Front end: HTML, CSS, Javascript
-Back end: Python, Flask server, postgres-based database
+![](js_py.png)![](flask_psql_logos.png)
+<br><br>
 
 
 ## Technical information for building up database of the project 
@@ -29,7 +30,7 @@ sudo -u <user_name> createdb <name_of_database><br>
 2. Initiating connection to the created database: <br>
 \connect <name_of_database>
     
-3. Set up Environment variables for running from localhost:
+3. Set up *Environment Variables* for running from localhost:
     PSQL_USER_NAME=<your_username>>;
     PSQL_PASSWORD=<your_chosen_password>;
     PSQL_HOST=localhost;
@@ -47,7 +48,7 @@ sudo -u <user_name> createdb <name_of_database><br>
 ## User information about main functionalities of the codecool series webpage
 
 ![](proman.png)
-
+<br><br><br>
         1. There is a "Create new board" button after opening the root url (/)
         2. After clicking the "Create new board" button, the user can give the new board's title in an editable field
         3. There's a "Save" button that saves the new board along with its title (it displays on the board's page and the board list)
